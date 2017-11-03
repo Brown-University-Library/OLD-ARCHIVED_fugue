@@ -1,0 +1,12 @@
+data-sources:
+    atalanta-texts-orig: 
+        type:   filesystem
+        directory: ../atalanta-data/transcriptions/original-transcription
+        filemask: '*.xml'
+
+    atalanta-text-english:
+        type:   filesystem
+        directory: ../atalanta-data/transcriptions/english-translation
+        filemask: '*.xml'
+    
+pages: 
