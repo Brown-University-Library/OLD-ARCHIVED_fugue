@@ -1,7 +1,7 @@
 <chamber-data>
   <data-sources>
     <atalanta-texts-orig>
-      <file filename="emblem1.xml" mtime="2017-10-26T14:58:45.801330" atime="2017-10-26T14:58:45.800329" size="17417">
+      <file filename="emblem1.xml" extension=".xml" mime-type="text/xml" mtime="2017-10-26T14:58:45.801330" atime="2017-10-26T14:58:45.800329" size="17417">
         <TEI xmlns="http://www.tei-c.org/ns/1.0">
   <teiHeader>
       <fileDesc>
@@ -176,7 +176,7 @@
   </text>
 </TEI>
       </file>
-      <file filename="emblem10.xml" mtime="2017-10-26T14:58:45.802331" atime="2017-10-26T14:58:45.801330" size="25593">
+      <file filename="emblem10.xml" extension=".xml" mime-type="text/xml" mtime="2017-10-26T14:58:45.802331" atime="2017-10-26T14:58:45.801330" size="25593">
         <TEI xmlns="http://www.tei-c.org/ns/1.0">
   <teiHeader>
       <fileDesc>
@@ -340,7 +340,7 @@
   </text>
 </TEI>
       </file>
-      <file filename="emblem11.xml" mtime="2017-10-26T14:58:45.803330" atime="2017-10-26T14:58:45.802331" size="18752">
+      <file filename="emblem11.xml" extension=".xml" mime-type="text/xml" mtime="2017-10-26T14:58:45.803330" atime="2017-10-26T14:58:45.802331" size="18752">
         <TEI xmlns="http://www.tei-c.org/ns/1.0">
   <teiHeader>
       <fileDesc>
@@ -504,7 +504,7 @@
   </text>
 </TEI>
       </file>
-      <file filename="emblem14.xml" mtime="2017-10-26T14:58:45.804331" atime="2017-10-26T14:58:45.804331" size="13463">
+      <file filename="emblem14.xml" extension=".xml" mime-type="text/xml" mtime="2017-10-26T14:58:45.804331" atime="2017-10-26T14:58:45.804331" size="13463">
         <TEI xmlns="http://www.tei-c.org/ns/1.0">
   <teiHeader>
       <fileDesc>
@@ -657,7 +657,7 @@
   </text>
 </TEI>
       </file>
-      <file filename="emblem2.xml" mtime="2017-10-26T14:58:45.805331" atime="2017-10-26T14:58:45.805331" size="14438">
+      <file filename="emblem2.xml" extension=".xml" mime-type="text/xml" mtime="2017-10-26T14:58:45.805331" atime="2017-10-26T14:58:45.805331" size="14438">
         <TEI xmlns="http://www.tei-c.org/ns/1.0">
   <teiHeader>
       <fileDesc>
@@ -814,7 +814,7 @@
   </text>
 </TEI>
       </file>
-      <file filename="emblem26.xml" mtime="2017-10-26T14:58:45.806329" atime="2017-10-26T14:58:45.806329" size="22299">
+      <file filename="emblem26.xml" extension=".xml" mime-type="text/xml" mtime="2017-10-26T14:58:45.806329" atime="2017-10-26T14:58:45.806329" size="22299">
         <TEI xmlns="http://www.tei-c.org/ns/1.0">
   <teiHeader>
       <fileDesc>
@@ -999,7 +999,7 @@
   </text>
 </TEI>
       </file>
-      <file filename="emblem3.xml" mtime="2017-10-26T14:58:45.808331" atime="2017-10-26T14:58:45.807331" size="14111">
+      <file filename="emblem3.xml" extension=".xml" mime-type="text/xml" mtime="2017-10-26T14:58:45.808331" atime="2017-10-26T14:58:45.807331" size="14111">
         <TEI xmlns="http://www.tei-c.org/ns/1.0">
   <teiHeader>
       <fileDesc>
@@ -1157,7 +1157,7 @@
   </text>
 </TEI>
       </file>
-      <file filename="emblem4.xml" mtime="2017-10-26T14:58:45.808331" atime="2017-10-26T14:58:45.808331" size="14262">
+      <file filename="emblem4.xml" extension=".xml" mime-type="text/xml" mtime="2017-10-26T14:58:45.808331" atime="2017-10-26T14:58:45.808331" size="14262">
         <TEI xmlns="http://www.tei-c.org/ns/1.0">
   <teiHeader>
       <fileDesc>
@@ -1314,7 +1314,7 @@
   </text>
 </TEI>
       </file>
-      <file filename="emblem42.xml" mtime="2017-10-26T14:58:45.812331" atime="2017-10-26T14:58:45.809331" size="13899">
+      <file filename="emblem42.xml" extension=".xml" mime-type="text/xml" mtime="2017-10-26T14:58:45.812331" atime="2017-10-26T14:58:45.809331" size="13899">
         <TEI xmlns="http://www.tei-c.org/ns/1.0">
   <teiHeader>
       <fileDesc>
@@ -1469,7 +1469,7 @@
   </text>
 </TEI>
       </file>
-      <file filename="emblem5.xml" mtime="2017-10-26T14:58:45.813332" atime="2017-10-26T14:58:45.813332" size="15975">
+      <file filename="emblem5.xml" extension=".xml" mime-type="text/xml" mtime="2017-10-26T14:58:45.813332" atime="2017-10-26T14:58:45.813332" size="15975">
         <TEI xmlns="http://www.tei-c.org/ns/1.0">
   <teiHeader>
       <fileDesc>
@@ -1641,7 +1641,7 @@
   </text>
 </TEI>
       </file>
-      <file filename="emblem50.xml" mtime="2017-10-26T14:58:45.814331" atime="2017-10-26T14:58:45.814331" size="14808">
+      <file filename="emblem50.xml" extension=".xml" mime-type="text/xml" mtime="2017-10-26T14:58:45.814331" atime="2017-10-26T14:58:45.814331" size="14808">
         <TEI xmlns="http://www.tei-c.org/ns/1.0">
   <teiHeader>
       <fileDesc>
@@ -1796,7 +1796,7 @@
   </text>
 </TEI>
       </file>
-      <file filename="emblem6.xml" mtime="2017-10-26T14:58:45.815331" atime="2017-10-26T14:58:45.815331" size="26565">
+      <file filename="emblem6.xml" extension=".xml" mime-type="text/xml" mtime="2017-10-26T14:58:45.815331" atime="2017-10-26T14:58:45.815331" size="26565">
         <TEI xmlns="http://www.tei-c.org/ns/1.0">
   <teiHeader>
       <fileDesc>
@@ -1970,7 +1970,7 @@
   </text>
 </TEI>
       </file>
-      <file filename="emblem7.xml" mtime="2017-10-26T14:58:45.817339" atime="2017-10-26T14:58:45.816343" size="15012">
+      <file filename="emblem7.xml" extension=".xml" mime-type="text/xml" mtime="2017-10-26T14:58:45.817339" atime="2017-10-26T14:58:45.816343" size="15012">
         <TEI xmlns="http://www.tei-c.org/ns/1.0">
   <teiHeader>
       <fileDesc>
@@ -2130,7 +2130,7 @@
   </text>
 </TEI>
       </file>
-      <file filename="emblem8.xml" mtime="2017-10-26T14:58:45.818333" atime="2017-10-26T14:58:45.818333" size="13553">
+      <file filename="emblem8.xml" extension=".xml" mime-type="text/xml" mtime="2017-10-26T14:58:45.818333" atime="2017-10-26T14:58:45.818333" size="13553">
         <TEI xmlns="http://www.tei-c.org/ns/1.0">
   <teiHeader>
       <fileDesc>
@@ -2281,7 +2281,7 @@
   </text>
 </TEI>
       </file>
-      <file filename="emblem9.xml" mtime="2017-10-26T14:58:45.819335" atime="2017-10-26T14:58:45.819335" size="26702">
+      <file filename="emblem9.xml" extension=".xml" mime-type="text/xml" mtime="2017-10-26T14:58:45.819335" atime="2017-10-26T14:58:45.819335" size="26702">
         <TEI xmlns="http://www.tei-c.org/ns/1.0">
   <teiHeader>
       <fileDesc>
@@ -2450,7 +2450,7 @@
   </text>
 </TEI>
       </file>
-      <file filename="PraefatioAdLectorem.xml" mtime="2017-10-26T14:58:45.800329" atime="2017-10-26T14:58:45.799331" size="8300">
+      <file filename="PraefatioAdLectorem.xml" extension=".xml" mime-type="text/xml" mtime="2017-10-26T14:58:45.800329" atime="2017-10-26T14:58:45.799331" size="8300">
         <TEI xmlns="http://www.tei-c.org/ns/1.0">
   <teiHeader>
       <fileDesc>
@@ -2533,8 +2533,8 @@
 </TEI>
       </file>
     </atalanta-texts-orig>
-    <atalanta-text-english>
-      <file filename="emblem01.xml" mtime="2017-10-26T14:58:45.637328" atime="2017-10-26T14:58:45.636327" size="20544">
+    <atalanta-texts-english>
+      <file filename="emblem01.xml" extension=".xml" mime-type="text/xml" mtime="2017-10-26T14:58:45.637328" atime="2017-10-26T14:58:45.636327" size="20544">
         <TEI xmlns="http://www.tei-c.org/ns/1.0" xml:id="Atalanta-En-01">
     <teiHeader>
         <fileDesc>
@@ -2660,7 +2660,7 @@
     </text>
 </TEI>
       </file>
-      <file filename="emblem02.xml" mtime="2017-10-26T14:58:45.638329" atime="2017-10-26T14:58:45.637328" size="16453">
+      <file filename="emblem02.xml" extension=".xml" mime-type="text/xml" mtime="2017-10-26T14:58:45.638329" atime="2017-10-26T14:58:45.637328" size="16453">
         <TEI xmlns="http://www.tei-c.org/ns/1.0">
     <teiHeader>
         <fileDesc>
@@ -2784,7 +2784,7 @@
     </text>
 </TEI>
       </file>
-      <file filename="emblem03.xml" mtime="2017-10-26T14:58:45.639327" atime="2017-10-26T14:58:45.638329" size="15692">
+      <file filename="emblem03.xml" extension=".xml" mime-type="text/xml" mtime="2017-10-26T14:58:45.639327" atime="2017-10-26T14:58:45.638329" size="15692">
         <TEI xmlns="http://www.tei-c.org/ns/1.0">
    <teiHeader>
       <fileDesc>
@@ -2904,7 +2904,7 @@
    </text>
 </TEI>
       </file>
-      <file filename="emblem04.xml" mtime="2017-10-26T14:58:45.647326" atime="2017-10-26T14:58:45.639327" size="13725">
+      <file filename="emblem04.xml" extension=".xml" mime-type="text/xml" mtime="2017-10-26T14:58:45.647326" atime="2017-10-26T14:58:45.639327" size="13725">
         <TEI xmlns="http://www.tei-c.org/ns/1.0">
    <teiHeader>
       <fileDesc>
@@ -3022,7 +3022,7 @@
    </text>
 </TEI>
       </file>
-      <file filename="emblem05.xml" mtime="2017-10-26T14:58:45.648328" atime="2017-10-26T14:58:45.647326" size="18565">
+      <file filename="emblem05.xml" extension=".xml" mime-type="text/xml" mtime="2017-10-26T14:58:45.648328" atime="2017-10-26T14:58:45.647326" size="18565">
         <TEI xmlns="http://www.tei-c.org/ns/1.0">
     <teiHeader>
         <fileDesc>
@@ -3149,7 +3149,7 @@
     </text>
 </TEI>
       </file>
-      <file filename="emblem06.xml" mtime="2017-10-26T14:58:45.649326" atime="2017-10-26T14:58:45.649326" size="17593">
+      <file filename="emblem06.xml" extension=".xml" mime-type="text/xml" mtime="2017-10-26T14:58:45.649326" atime="2017-10-26T14:58:45.649326" size="17593">
         <TEI xmlns="http://www.tei-c.org/ns/1.0">
    <teiHeader>
       <fileDesc>
@@ -3280,7 +3280,7 @@
    </text>
 </TEI>
       </file>
-      <file filename="emblem07.xml" mtime="2017-10-26T14:58:45.650327" atime="2017-10-26T14:58:45.649326" size="16684">
+      <file filename="emblem07.xml" extension=".xml" mime-type="text/xml" mtime="2017-10-26T14:58:45.650327" atime="2017-10-26T14:58:45.649326" size="16684">
         <TEI xmlns="http://www.tei-c.org/ns/1.0">
     <teiHeader>
         <fileDesc>
@@ -3407,7 +3407,7 @@
     </text>
 </TEI>
       </file>
-      <file filename="emblem08.xml" mtime="2017-10-26T14:58:45.651329" atime="2017-10-26T14:58:45.650327" size="14712">
+      <file filename="emblem08.xml" extension=".xml" mime-type="text/xml" mtime="2017-10-26T14:58:45.651329" atime="2017-10-26T14:58:45.650327" size="14712">
         <TEI xmlns="http://www.tei-c.org/ns/1.0">
     <teiHeader>
         <fileDesc>
@@ -3522,7 +3522,7 @@
     </text>
 </TEI>
       </file>
-      <file filename="emblem09.xml" mtime="2017-10-26T14:58:45.652332" atime="2017-10-26T14:58:45.651329" size="18666">
+      <file filename="emblem09.xml" extension=".xml" mime-type="text/xml" mtime="2017-10-26T14:58:45.652332" atime="2017-10-26T14:58:45.651329" size="18666">
         <TEI xmlns="http://www.tei-c.org/ns/1.0">
     <teiHeader>
         <fileDesc>
@@ -3661,7 +3661,7 @@
     </text>
 </TEI>
       </file>
-      <file filename="emblem10.xml" mtime="2017-10-26T14:58:45.653326" atime="2017-10-26T14:58:45.652332" size="17732">
+      <file filename="emblem10.xml" extension=".xml" mime-type="text/xml" mtime="2017-10-26T14:58:45.653326" atime="2017-10-26T14:58:45.652332" size="17732">
         <TEI xmlns="http://www.tei-c.org/ns/1.0">
     <teiHeader>
         <fileDesc>
@@ -3795,7 +3795,7 @@
     </text>
 </TEI>
       </file>
-      <file filename="emblem11.xml" mtime="2017-10-26T14:58:45.663330" atime="2017-10-26T14:58:45.653326" size="16593">
+      <file filename="emblem11.xml" extension=".xml" mime-type="text/xml" mtime="2017-10-26T14:58:45.663330" atime="2017-10-26T14:58:45.653326" size="16593">
         <TEI xmlns="http://www.tei-c.org/ns/1.0">
     <teiHeader>
         <fileDesc>
@@ -3925,7 +3925,7 @@
     </text>
 </TEI>
       </file>
-      <file filename="emblem12.xml" mtime="2017-10-26T14:58:45.664328" atime="2017-10-26T14:58:45.664328" size="15853">
+      <file filename="emblem12.xml" extension=".xml" mime-type="text/xml" mtime="2017-10-26T14:58:45.664328" atime="2017-10-26T14:58:45.664328" size="15853">
         <TEI xmlns="http://www.tei-c.org/ns/1.0">
     <teiHeader>
         <fileDesc>
@@ -4043,7 +4043,7 @@
     </text>
 </TEI>
       </file>
-      <file filename="emblem13.xml" mtime="2017-10-26T14:58:45.682328" atime="2017-10-26T14:58:45.665330" size="18335">
+      <file filename="emblem13.xml" extension=".xml" mime-type="text/xml" mtime="2017-10-26T14:58:45.682328" atime="2017-10-26T14:58:45.665330" size="18335">
         <TEI xmlns="http://www.tei-c.org/ns/1.0">
     <teiHeader>
         <fileDesc>
@@ -4175,7 +4175,7 @@
     </text>
 </TEI>
       </file>
-      <file filename="emblem14.xml" mtime="2017-10-26T14:58:45.683329" atime="2017-10-26T14:58:45.682328" size="14364">
+      <file filename="emblem14.xml" extension=".xml" mime-type="text/xml" mtime="2017-10-26T14:58:45.683329" atime="2017-10-26T14:58:45.682328" size="14364">
         <TEI xmlns="http://www.tei-c.org/ns/1.0">
     <teiHeader>
         <fileDesc>
@@ -4293,7 +4293,7 @@
     </text>
 </TEI>
       </file>
-      <file filename="emblem15.xml" mtime="2017-10-26T14:58:45.684331" atime="2017-10-26T14:58:45.683329" size="15542">
+      <file filename="emblem15.xml" extension=".xml" mime-type="text/xml" mtime="2017-10-26T14:58:45.684331" atime="2017-10-26T14:58:45.683329" size="15542">
         <TEI xmlns="http://www.tei-c.org/ns/1.0">
     <teiHeader>
         <fileDesc>
@@ -4419,7 +4419,7 @@
     </text>
 </TEI>
       </file>
-      <file filename="emblem16.xml" mtime="2017-10-26T14:58:45.684331" atime="2017-10-26T14:58:45.684331" size="15751">
+      <file filename="emblem16.xml" extension=".xml" mime-type="text/xml" mtime="2017-10-26T14:58:45.684331" atime="2017-10-26T14:58:45.684331" size="15751">
         <TEI xmlns="http://www.tei-c.org/ns/1.0">
     <teiHeader>
         <fileDesc>
@@ -4539,7 +4539,7 @@
     </text>
 </TEI>
       </file>
-      <file filename="emblem17.xml" mtime="2017-10-26T14:58:45.685328" atime="2017-10-26T14:58:45.685328" size="15768">
+      <file filename="emblem17.xml" extension=".xml" mime-type="text/xml" mtime="2017-10-26T14:58:45.685328" atime="2017-10-26T14:58:45.685328" size="15768">
         <TEI xmlns="http://www.tei-c.org/ns/1.0">
     <teiHeader>
         <fileDesc>
@@ -4672,7 +4672,7 @@
     </text>
 </TEI>
       </file>
-      <file filename="emblem18.xml" mtime="2017-10-26T14:58:45.686328" atime="2017-10-26T14:58:45.686328" size="15552">
+      <file filename="emblem18.xml" extension=".xml" mime-type="text/xml" mtime="2017-10-26T14:58:45.686328" atime="2017-10-26T14:58:45.686328" size="15552">
         <TEI xmlns="http://www.tei-c.org/ns/1.0">
     <teiHeader>
         <fileDesc>
@@ -4800,7 +4800,7 @@
     </text>
 </TEI>
       </file>
-      <file filename="emblem19.xml" mtime="2017-10-26T14:58:45.687329" atime="2017-10-26T14:58:45.687329" size="17302">
+      <file filename="emblem19.xml" extension=".xml" mime-type="text/xml" mtime="2017-10-26T14:58:45.687329" atime="2017-10-26T14:58:45.687329" size="17302">
         <TEI xmlns="http://www.tei-c.org/ns/1.0">
     <teiHeader>
         <fileDesc>
@@ -4927,7 +4927,7 @@
     </text>
 </TEI>
       </file>
-      <file filename="emblem20.xml" mtime="2017-10-26T14:58:45.689329" atime="2017-10-26T14:58:45.688330" size="16788">
+      <file filename="emblem20.xml" extension=".xml" mime-type="text/xml" mtime="2017-10-26T14:58:45.689329" atime="2017-10-26T14:58:45.688330" size="16788">
         <TEI xmlns="http://www.tei-c.org/ns/1.0">
     <teiHeader>
         <fileDesc>
@@ -5061,7 +5061,7 @@
     </text>
 </TEI>
       </file>
-      <file filename="emblem21.xml" mtime="2017-10-26T14:58:45.689329" atime="2017-10-26T14:58:45.689329" size="16741">
+      <file filename="emblem21.xml" extension=".xml" mime-type="text/xml" mtime="2017-10-26T14:58:45.689329" atime="2017-10-26T14:58:45.689329" size="16741">
         <TEI xmlns="http://www.tei-c.org/ns/1.0">
     <teiHeader>
         <fileDesc>
@@ -5194,7 +5194,7 @@
     </text>
 </TEI>
       </file>
-      <file filename="emblem22.xml" mtime="2017-10-26T14:58:45.690329" atime="2017-10-26T14:58:45.690329" size="15134">
+      <file filename="emblem22.xml" extension=".xml" mime-type="text/xml" mtime="2017-10-26T14:58:45.690329" atime="2017-10-26T14:58:45.690329" size="15134">
         <TEI xmlns="http://www.tei-c.org/ns/1.0">
     <teiHeader>
         <fileDesc>
@@ -5314,7 +5314,7 @@
     </text>
 </TEI>
       </file>
-      <file filename="emblem23.xml" mtime="2017-10-26T14:58:45.691338" atime="2017-10-26T14:58:45.691338" size="15359">
+      <file filename="emblem23.xml" extension=".xml" mime-type="text/xml" mtime="2017-10-26T14:58:45.691338" atime="2017-10-26T14:58:45.691338" size="15359">
         <TEI xmlns="http://www.tei-c.org/ns/1.0">
     <teiHeader>
         <fileDesc>
@@ -5434,7 +5434,7 @@
     </text>
 </TEI>
       </file>
-      <file filename="emblem24.xml" mtime="2017-10-26T14:58:45.692331" atime="2017-10-26T14:58:45.692331" size="21028">
+      <file filename="emblem24.xml" extension=".xml" mime-type="text/xml" mtime="2017-10-26T14:58:45.692331" atime="2017-10-26T14:58:45.692331" size="21028">
         <TEI xmlns="http://www.tei-c.org/ns/1.0">
     <teiHeader>
         <fileDesc>
@@ -5567,7 +5567,7 @@
     </text>
 </TEI>
       </file>
-      <file filename="emblem25.xml" mtime="2017-10-26T14:58:45.694329" atime="2017-10-26T14:58:45.693329" size="18260">
+      <file filename="emblem25.xml" extension=".xml" mime-type="text/xml" mtime="2017-10-26T14:58:45.694329" atime="2017-10-26T14:58:45.693329" size="18260">
         <TEI xmlns="http://www.tei-c.org/ns/1.0">
     <teiHeader>
         <fileDesc>
@@ -5698,7 +5698,7 @@
     </text>
 </TEI>
       </file>
-      <file filename="emblem26.xml" mtime="2017-10-26T14:58:45.695335" atime="2017-10-26T14:58:45.694329" size="19045">
+      <file filename="emblem26.xml" extension=".xml" mime-type="text/xml" mtime="2017-10-26T14:58:45.695335" atime="2017-10-26T14:58:45.694329" size="19045">
         <TEI xmlns="http://www.tei-c.org/ns/1.0">
     <teiHeader>
         <fileDesc>
@@ -5825,7 +5825,7 @@
     </text>
 </TEI>
       </file>
-      <file filename="emblem27.xml" mtime="2017-10-26T14:58:45.696329" atime="2017-10-26T14:58:45.696329" size="15955">
+      <file filename="emblem27.xml" extension=".xml" mime-type="text/xml" mtime="2017-10-26T14:58:45.696329" atime="2017-10-26T14:58:45.696329" size="15955">
         <TEI xmlns="http://www.tei-c.org/ns/1.0">
     <teiHeader>
         <fileDesc>
@@ -5947,7 +5947,7 @@
     </text>
 </TEI>
       </file>
-      <file filename="emblem28.xml" mtime="2017-10-26T14:58:45.697330" atime="2017-10-26T14:58:45.697330" size="16593">
+      <file filename="emblem28.xml" extension=".xml" mime-type="text/xml" mtime="2017-10-26T14:58:45.697330" atime="2017-10-26T14:58:45.697330" size="16593">
         <TEI xmlns="http://www.tei-c.org/ns/1.0">
     <teiHeader>
         <fileDesc>
@@ -6081,7 +6081,7 @@
     </text>
 </TEI>
       </file>
-      <file filename="emblem29.xml" mtime="2017-10-26T14:58:45.698330" atime="2017-10-26T14:58:45.698330" size="18829">
+      <file filename="emblem29.xml" extension=".xml" mime-type="text/xml" mtime="2017-10-26T14:58:45.698330" atime="2017-10-26T14:58:45.698330" size="18829">
         <TEI xmlns="http://www.tei-c.org/ns/1.0">
     <teiHeader>
         <fileDesc>
@@ -6222,7 +6222,7 @@
     </text>
 </TEI>
       </file>
-      <file filename="emblem30.xml" mtime="2017-10-26T14:58:45.699329" atime="2017-10-26T14:58:45.699329" size="18966">
+      <file filename="emblem30.xml" extension=".xml" mime-type="text/xml" mtime="2017-10-26T14:58:45.699329" atime="2017-10-26T14:58:45.699329" size="18966">
         <TEI xmlns="http://www.tei-c.org/ns/1.0">
     <teiHeader>
         <fileDesc>
@@ -6363,7 +6363,7 @@
     </text>
 </TEI>
       </file>
-      <file filename="emblem31.xml" mtime="2017-10-26T14:58:45.700329" atime="2017-10-26T14:58:45.700329" size="17195">
+      <file filename="emblem31.xml" extension=".xml" mime-type="text/xml" mtime="2017-10-26T14:58:45.700329" atime="2017-10-26T14:58:45.700329" size="17195">
         <TEI xmlns="http://www.tei-c.org/ns/1.0">
     <teiHeader>
         <fileDesc>
@@ -6493,7 +6493,7 @@
     </text>
 </TEI>
       </file>
-      <file filename="emblem32.xml" mtime="2017-10-26T14:58:45.701327" atime="2017-10-26T14:58:45.701327" size="17881">
+      <file filename="emblem32.xml" extension=".xml" mime-type="text/xml" mtime="2017-10-26T14:58:45.701327" atime="2017-10-26T14:58:45.701327" size="17881">
         <TEI xmlns="http://www.tei-c.org/ns/1.0">
     <teiHeader>
         <fileDesc>
@@ -6629,7 +6629,7 @@
     </text>
 </TEI>
       </file>
-      <file filename="emblem33.xml" mtime="2017-10-26T14:58:45.735330" atime="2017-10-26T14:58:45.702328" size="15943">
+      <file filename="emblem33.xml" extension=".xml" mime-type="text/xml" mtime="2017-10-26T14:58:45.735330" atime="2017-10-26T14:58:45.702328" size="15943">
         <TEI xmlns="http://www.tei-c.org/ns/1.0">
     <teiHeader>
         <fileDesc>
@@ -6765,7 +6765,7 @@
     </text>
 </TEI>
       </file>
-      <file filename="emblem34.xml" mtime="2017-10-26T14:58:45.736331" atime="2017-10-26T14:58:45.736331" size="17210">
+      <file filename="emblem34.xml" extension=".xml" mime-type="text/xml" mtime="2017-10-26T14:58:45.736331" atime="2017-10-26T14:58:45.736331" size="17210">
         <TEI xmlns="http://www.tei-c.org/ns/1.0">
     <teiHeader>
         <fileDesc>
@@ -6899,7 +6899,7 @@
     </text>
 </TEI>
       </file>
-      <file filename="emblem35.xml" mtime="2017-10-26T14:58:45.737330" atime="2017-10-26T14:58:45.737330" size="16311">
+      <file filename="emblem35.xml" extension=".xml" mime-type="text/xml" mtime="2017-10-26T14:58:45.737330" atime="2017-10-26T14:58:45.737330" size="16311">
         <TEI xmlns="http://www.tei-c.org/ns/1.0">
     <teiHeader>
         <fileDesc>
@@ -7033,7 +7033,7 @@
     </text>
 </TEI>
       </file>
-      <file filename="emblem36.xml" mtime="2017-10-26T14:58:45.738329" atime="2017-10-26T14:58:45.737330" size="16420">
+      <file filename="emblem36.xml" extension=".xml" mime-type="text/xml" mtime="2017-10-26T14:58:45.738329" atime="2017-10-26T14:58:45.737330" size="16420">
         <TEI xmlns="http://www.tei-c.org/ns/1.0">
     <teiHeader>
         <fileDesc>
@@ -7163,7 +7163,7 @@
     </text>
 </TEI>
       </file>
-      <file filename="emblem37.xml" mtime="2017-10-26T14:58:45.773341" atime="2017-10-26T14:58:45.739330" size="15578">
+      <file filename="emblem37.xml" extension=".xml" mime-type="text/xml" mtime="2017-10-26T14:58:45.773341" atime="2017-10-26T14:58:45.739330" size="15578">
         <TEI xmlns="http://www.tei-c.org/ns/1.0">
     <teiHeader>
         <fileDesc>
@@ -7302,7 +7302,7 @@
     </text>
 </TEI>
       </file>
-      <file filename="emblem38.xml" mtime="2017-10-26T14:58:45.779345" atime="2017-10-26T14:58:45.778342" size="15838">
+      <file filename="emblem38.xml" extension=".xml" mime-type="text/xml" mtime="2017-10-26T14:58:45.779345" atime="2017-10-26T14:58:45.778342" size="15838">
         <TEI xmlns="http://www.tei-c.org/ns/1.0">
     <teiHeader>
         <fileDesc>
@@ -7440,7 +7440,7 @@
     </text>
 </TEI>
       </file>
-      <file filename="emblem39.xml" mtime="2017-10-26T14:58:45.781329" atime="2017-10-26T14:58:45.780334" size="19434">
+      <file filename="emblem39.xml" extension=".xml" mime-type="text/xml" mtime="2017-10-26T14:58:45.781329" atime="2017-10-26T14:58:45.780334" size="19434">
         <TEI xmlns="http://www.tei-c.org/ns/1.0">
     <teiHeader>
         <fileDesc>
@@ -7580,7 +7580,7 @@
     </text>
 </TEI>
       </file>
-      <file filename="emblem40.xml" mtime="2017-10-26T14:58:45.782331" atime="2017-10-26T14:58:45.781329" size="15313">
+      <file filename="emblem40.xml" extension=".xml" mime-type="text/xml" mtime="2017-10-26T14:58:45.782331" atime="2017-10-26T14:58:45.781329" size="15313">
         <TEI xmlns="http://www.tei-c.org/ns/1.0">
     <teiHeader>
         <fileDesc>
@@ -7711,7 +7711,7 @@
     </text>
 </TEI>
       </file>
-      <file filename="emblem41.xml" mtime="2017-10-26T14:58:45.783329" atime="2017-10-26T14:58:45.782331" size="14684">
+      <file filename="emblem41.xml" extension=".xml" mime-type="text/xml" mtime="2017-10-26T14:58:45.783329" atime="2017-10-26T14:58:45.782331" size="14684">
         <TEI xmlns="http://www.tei-c.org/ns/1.0">
     <teiHeader>
         <fileDesc>
@@ -7836,7 +7836,7 @@
     </text>
 </TEI>
       </file>
-      <file filename="emblem42.xml" mtime="2017-10-26T14:58:45.784330" atime="2017-10-26T14:58:45.783329" size="15139">
+      <file filename="emblem42.xml" extension=".xml" mime-type="text/xml" mtime="2017-10-26T14:58:45.784330" atime="2017-10-26T14:58:45.783329" size="15139">
         <TEI xmlns="http://www.tei-c.org/ns/1.0">
     <teiHeader>
         <fileDesc>
@@ -7962,7 +7962,7 @@
     </text>
 </TEI>
       </file>
-      <file filename="emblem43.xml" mtime="2017-10-26T14:58:45.785332" atime="2017-10-26T14:58:45.784330" size="19327">
+      <file filename="emblem43.xml" extension=".xml" mime-type="text/xml" mtime="2017-10-26T14:58:45.785332" atime="2017-10-26T14:58:45.784330" size="19327">
         <TEI xmlns="http://www.tei-c.org/ns/1.0">
     <teiHeader>
         <fileDesc>
@@ -8109,7 +8109,7 @@
     </text>
 </TEI>
       </file>
-      <file filename="emblem44.xml" mtime="2017-10-26T14:58:45.785332" atime="2017-10-26T14:58:45.785332" size="17751">
+      <file filename="emblem44.xml" extension=".xml" mime-type="text/xml" mtime="2017-10-26T14:58:45.785332" atime="2017-10-26T14:58:45.785332" size="17751">
         <TEI xmlns="http://www.tei-c.org/ns/1.0">
     <teiHeader>
         <fileDesc>
@@ -8243,7 +8243,7 @@
     </text>
 </TEI>
       </file>
-      <file filename="emblem45.xml" mtime="2017-10-26T14:58:45.786329" atime="2017-10-26T14:58:45.786329" size="16732">
+      <file filename="emblem45.xml" extension=".xml" mime-type="text/xml" mtime="2017-10-26T14:58:45.786329" atime="2017-10-26T14:58:45.786329" size="16732">
         <TEI xmlns="http://www.tei-c.org/ns/1.0">
     <teiHeader>
         <fileDesc>
@@ -8373,7 +8373,7 @@
     </text>
 </TEI>
       </file>
-      <file filename="emblem46.xml" mtime="2017-10-26T14:58:45.787331" atime="2017-10-26T14:58:45.787331" size="15757">
+      <file filename="emblem46.xml" extension=".xml" mime-type="text/xml" mtime="2017-10-26T14:58:45.787331" atime="2017-10-26T14:58:45.787331" size="15757">
         <TEI xmlns="http://www.tei-c.org/ns/1.0">
     <teiHeader>
         <fileDesc>
@@ -8506,7 +8506,7 @@
     </text>
 </TEI>
       </file>
-      <file filename="emblem47.xml" mtime="2017-10-26T14:58:45.788331" atime="2017-10-26T14:58:45.788331" size="18204">
+      <file filename="emblem47.xml" extension=".xml" mime-type="text/xml" mtime="2017-10-26T14:58:45.788331" atime="2017-10-26T14:58:45.788331" size="18204">
         <TEI xmlns="http://www.tei-c.org/ns/1.0">
     <teiHeader>
         <fileDesc>
@@ -8638,7 +8638,7 @@
     </text>
 </TEI>
       </file>
-      <file filename="emblem48.xml" mtime="2017-10-26T14:58:45.789334" atime="2017-10-26T14:58:45.789334" size="14268">
+      <file filename="emblem48.xml" extension=".xml" mime-type="text/xml" mtime="2017-10-26T14:58:45.789334" atime="2017-10-26T14:58:45.789334" size="14268">
         <TEI xmlns="http://www.tei-c.org/ns/1.0">
     <teiHeader>
         <fileDesc>
@@ -8757,7 +8757,7 @@
     </text>
 </TEI>
       </file>
-      <file filename="emblem49.xml" mtime="2017-10-26T14:58:45.790336" atime="2017-10-26T14:58:45.790336" size="14622">
+      <file filename="emblem49.xml" extension=".xml" mime-type="text/xml" mtime="2017-10-26T14:58:45.790336" atime="2017-10-26T14:58:45.790336" size="14622">
         <TEI xmlns="http://www.tei-c.org/ns/1.0">
     <teiHeader>
         <fileDesc>
@@ -8880,7 +8880,7 @@
     </text>
 </TEI>
       </file>
-      <file filename="emblem50.xml" mtime="2017-10-26T14:58:45.791332" atime="2017-10-26T14:58:45.791332" size="15835">
+      <file filename="emblem50.xml" extension=".xml" mime-type="text/xml" mtime="2017-10-26T14:58:45.791332" atime="2017-10-26T14:58:45.791332" size="15835">
         <TEI xmlns="http://www.tei-c.org/ns/1.0">
     <teiHeader>
         <fileDesc>
@@ -9004,7 +9004,7 @@
     </text>
 </TEI>
       </file>
-      <file filename="english-template.xml" mtime="2017-10-26T14:58:45.797340" atime="2017-10-26T14:58:45.793331" size="2403">
+      <file filename="english-template.xml" extension=".xml" mime-type="text/xml" mtime="2017-10-26T14:58:45.797340" atime="2017-10-26T14:58:45.793331" size="2403">
         <TEI xmlns="http://www.tei-c.org/ns/1.0">
    <teiHeader>
       <fileDesc>
@@ -9064,7 +9064,7 @@
    </text>
 </TEI>
       </file>
-      <file filename="Introduction.xml" mtime="2017-10-26T14:58:45.636327" atime="2017-10-26T14:58:45.624327" size="38625">
+      <file filename="Introduction.xml" extension=".xml" mime-type="text/xml" mtime="2017-10-26T14:58:45.636327" atime="2017-10-26T14:58:45.624327" size="38625">
         <TEI xmlns="http://www.tei-c.org/ns/1.0">
     <teiHeader>
         <fileDesc>
@@ -9367,7 +9367,7 @@
     </text>
 </TEI>
       </file>
-      <file filename="table-of-contents.xml" mtime="2017-10-26T14:58:45.798330" atime="2017-10-26T14:58:45.798330" size="17188">
+      <file filename="table-of-contents.xml" extension=".xml" mime-type="text/xml" mtime="2017-10-26T14:58:45.798330" atime="2017-10-26T14:58:45.798330" size="17188">
         <TEI xmlns="http://www.tei-c.org/ns/1.0">
     <teiHeader>
         <fileDesc>
@@ -9476,6 +9476,6 @@
     </text>
 </TEI>
       </file>
-    </atalanta-text-english>
+    </atalanta-texts-english>
   </data-sources>
 </chamber-data>
