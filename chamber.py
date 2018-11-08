@@ -1,4 +1,3 @@
-#TODO NEXT: Get this working as a script with separate chamber settings and project config files.
 #TODO: Enable git updates for the data sources.
 #TODO: Enable pulling the config from a git repo.
 #TODO: Make this a simple command line script.
@@ -15,7 +14,9 @@ import mimetypes
 from importlib import reload, import_module
 from distutils.dir_util import copy_tree
 import shutil
+from subprocess import run
 import click
+
 
 from tidylib import tidy_document
 
@@ -37,7 +38,6 @@ with open(proj_file, 'r') as f:
 
 mimetypes.init('./mime.types')
 
-#TODO: Fix this. Recursion doesn't work right.
 def dict2xml(thing, targ = None):
     if targ == None:
         targ = ET.Element('data')
@@ -82,6 +82,20 @@ def _git(sourcerepo, targetrepo, action="pull", **kwargs):
     dothis = getattr(porcelain, action)
     dothis(sourcerepo, targetrepo,  **kwargs)
 
+def prepost(before=True):
+    if before:
+        commands = settings.get('preprocess', [])
+        print('preprocessing', commands)
+    else:
+        commands = settings.get('postprocess', [])
+        print('postprocessing', commands)
+    
+    if commands:
+        for command in commands:
+            run(command)
+
+prepost()
+
 
 #TODO: Logging.
 reload(logging)
@@ -102,8 +116,6 @@ def handle_filesystem_datasource(ds, dsroot):
     
     for p in files:
         sta = p.stat()
-
-        print(Path(dr, p))
 
         datumroot = ET.SubElement(dsroot, 'file')
         datumroot.set('filename', p.name)
@@ -166,7 +178,7 @@ def load_data_sources():
 
 outp = load_data_sources()
 
-#TODO: configurable output file with reasonable default.
+#TODO: configurable output file with #reasonable default.
 with open('fugue-data.xml', mode="wb") as outpfile:
     outpfile.write(ET.tostring(outp, pretty_print=True))
     
@@ -189,36 +201,68 @@ def copy_static_files():
         copy_tree(str(source), str(target))
         
 #TODO: Click should decide whether to do this.
-#copy_static_files()
+#TODO: Maybe replace this with rsync?
+copy_static_files()
     
 def apply_templates():
     pages = settings['pages']
     data = ET.parse('fugue-data.xml')
-    print(data)
     for pagename, page in pages.items():
-        print(pagename, page['items'])
         xslt = ET.parse(page['template'])
 
         transform = ET.XSLT(xslt)
 
-        items = data.xpath(page['items'])
-        pagecount = int(len(items) / page['perpage'])
-        if len(items) % page['perpage']:
-            pagecount += 1
+        
+        perpage = page.get('perpage', 1)
+        items = page.get('items', False)
 
-        #TODO: Use count and groupsize here.
+        if items:
+            xitems = data.xpath(page['items'])
+            pagecount = int(len(xitems) / perpage)
+            if len(xitems) % perpage:
+                pagecount += 1
+        else: 
+            pagecount = 1
+            perpage = 1
+                
+        #TODO: Pagination should be optional.
         for i in range(1, pagecount+1):
-            result = transform(data, pagenum=str(i))
+            params = {
+                'pagenum':      str(i),
+                'pagecount':    str(pagecount),
+                'perpage':      str(perpage),
+                'pagename':     "'{}'".format(pagename),
+            }
+
+            for k, v in page.items():
+                if k not in params.keys():
+                    if type(v) in (int, float):
+                        params[k] = str(v)
+                    if type(v) == str:
+                        if v.startswith('xpath:'):
+                            params[k] = v[len('xpath:'):]
+                        elif 'items' == k:
+                            params[k] = v
+                        else: #TODO: This will break stuff if v contains a '
+                            params[k] = "'{}'".format(v)
+            
+            result = transform(data, **params)
             
             #TODO: Make this an option somewhere. 
             pn = str(i).zfill(2)
             flname = page['uri'].replace('{pagenum}', pn)
-            target = str(Path(settings['site']['root'], flname))
-            print("Outputting "+target)
-            with open(target, 'wb') as f:
-                result.write_output(f)
+            target = Path(settings['site']['root'], flname)
+            
+            if not target.parent.exists():
+                target.parent.mkdir(parents=True)
+            
+            print("Outputting "+str(target))
+            #with target.open('wb') as f:
+            result.write_output(str(target))
 
 apply_templates()
+
+prepost(False)
             
 """
 @click.group(invoke_without_command=True)
