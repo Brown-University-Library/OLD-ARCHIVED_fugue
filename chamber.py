@@ -85,13 +85,14 @@ def _git(sourcerepo, targetrepo, action="pull", **kwargs):
 def prepost(before=True):
     if before:
         commands = settings.get('preprocess', [])
-        print('preprocessing', commands)
+        print('preprocessing')
     else:
         commands = settings.get('postprocess', [])
-        print('postprocessing', commands)
+        print('postprocessing')
     
     if commands:
         for command in commands:
+            print(' '.join(command))
             run(command)
 
 prepost()
