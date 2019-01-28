@@ -22,7 +22,7 @@ from tidylib import tidy_document
 
 #Look in this script's directory.
 #TODO: Also try user's home.
-conf_file = Path(os.path.dirname(os.path.realpath(sys.argv[0])), '.fugue.conf.yaml')
+conf_file = Path(os.path.dirname(os.path.realpath(sys.argv[0])), '.furnace.conf.yaml')
 try:
     with open(conf_file, 'r') as f:
         fconfig = yaml.load(f)
@@ -30,7 +30,7 @@ except FileNotFoundError:
     fconfig = {}
 
 
-proj_file = Path('.', 'fugue.project.yaml')
+proj_file = Path('.', 'furnace.project.yaml')
 #TODO: Throw a more specific exception if there's no project file.
 with open(proj_file, 'r') as f:
     settings = yaml.load(f)
@@ -68,7 +68,7 @@ def _git(sourcerepo, targetrepo, action="pull", **kwargs):
     keyf = gits.get('key_filename', False)
     
     if not keyf:
-        raise KeyError('You must set git: key_filename in .fugue.conf.yaml.')
+        raise KeyError('You must set git: key_filename in .furnace.conf.yaml.')
     
     #Have we set a custom vendor in config.yaml? Tell dulwich to use it.
     if bool(vend):
@@ -153,12 +153,11 @@ def handle_filesystem_datasource(ds, dsroot):
         datumroot.append(newtree)
 
 def load_data_sources():
-    xmlroot = ET.Element('fugue-data')
+    xmlroot = ET.Element('furnace-data')
     
-    projroot = ET.SubElement(xmlroot, 'fugue-config')
+    projroot = ET.SubElement(xmlroot, 'furnace-config')
 
-    #TODO: convert fugue.project.yaml to XML and insert in this file inside <fugue-config />
-    #Need a recursive function that uses an ET.TreeBuilder().
+    #Convert our settings file to XML and add to the XML data document.
     dict2xml(settings, projroot)
 
     dssroot = ET.SubElement(xmlroot, 'data-sources')
@@ -180,7 +179,7 @@ def load_data_sources():
 outp = load_data_sources()
 
 #TODO: configurable output file with #reasonable default.
-with open('fugue-data.xml', mode="wb") as outpfile:
+with open('furnace-data.xml', mode="wb") as outpfile:
     outpfile.write(ET.tostring(outp, pretty_print=True))
     
 def copy_static_files():
@@ -207,7 +206,7 @@ copy_static_files()
     
 def apply_templates():
     pages = settings['pages']
-    data = ET.parse('fugue-data.xml')
+    data = ET.parse('furnace-data.xml')
     for pagename, page in pages.items():
         xslt = ET.parse(page['template'])
 
@@ -269,22 +268,22 @@ prepost(False)
 @click.group(invoke_without_command=True)
 @click.argument('config', default=os.path.join(here, 'config.yaml'))
 @click.pass_context
-def fugue(cxt, config):
-    #Load the fugue settings file and the project config.
+def furnace(cxt, config):
+    #Load the furnace settings file and the project config.
     click.echo(config)
 
-@fugue.command()
+@furnace.command()
 def git():
     pass
     
-@fugue.command()
+@furnace.command()
 def builddata():
     pass
 
-@fugue.command()
+@furnace.command()
 def copystatic():
     pass
     
 if __name__ == '__main__':
-    fugue()
+    furnace()
 """

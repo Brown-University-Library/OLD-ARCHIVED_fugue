@@ -1,1 +1,1 @@
-# Chamber: XSLT-based site generator
+# Furnace: XSLT-based site generator
