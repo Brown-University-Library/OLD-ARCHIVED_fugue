@@ -8,6 +8,9 @@ import os
 import sys
 from pathlib import Path
 from datetime import datetime
+from csv import DictReader as csvreader
+import re
+
 import yaml
 from lxml import etree as ET
 import mimetypes
@@ -123,33 +126,56 @@ def handle_filesystem_datasource(ds, dsroot):
         datumroot.set('pathname', str(p.parent))
         datumroot.set('fullpath', str(p))
         datumroot.set('extension', p.suffix[1:])
+        print(str(p))
 
+        mimetype = ""
         try:
+            mimetype = mimetypes.guess_type(p.name)[0]
             datumroot.set('mime-type', mimetypes.guess_type(p.name)[0])
         except TypeError:
             pass
-        #datumroot.set()
         datumroot.set('mtime', datetime.utcfromtimestamp(sta.st_mtime).isoformat())
         datumroot.set('atime', datetime.utcfromtimestamp(sta.st_atime).isoformat())
         datumroot.set('size', str(sta.st_size))
 
-        with p.open("rb") as fl:
-            xmldat = fl.read()
-        
-        try: 
-            newtree = ET.fromstring(xmldat)
-        except ET.XMLSyntaxError: 
-            xmldat, tidyerr = tidy_document(xmldat, options={'output-xml': 1, 'indent': 0, 'tidy-mark':0})
-            newtree = ET.fromstring(xmldat)
-        
-        #TODO: Need to look for id or xml:id attributes and kill them (infile-id?).
-        #TODO: Need to do this better--somehow preserve namespaces.
-        ideds = newtree.xpath('//*[@*[local-name()="id"]]')
-        for ided in ideds:
-            nsurl = ided.xpath('namespace-uri(@*[local-name()="id"])')
-            attname = '{{{nsurl}}}id'.format(nsurl=nsurl)
-            attrval = ided.attrib.pop(attname)
-            ided.attrib['origfile-id'] = attrval
+    
+        #Check mime-type here.
+        #TODO: have different file types handled by plugins.
+        if "text/csv" == mimetype:
+            with p.open("r", encoding='utf8') as fl:
+                rdr = csvreader(fl)
+                rowcount = 0
+                newtree = ET.Element('csvdata')
+                
+                re_starts_with_digit = re.compile(r'(^[0-9])')
+                re_non_word_chars = re.compile(r'[^\w]+')
+
+                for row in rdr:
+                    rowcount += 1
+                    xmlrow = ET.SubElement(newtree, 'item')
+                    for k, v in row.items():
+                        tagname = re_starts_with_digit.sub(r'_\1', k.lower())
+                        tagname = re_non_word_chars.sub('_', tagname)
+                        newcell = ET.SubElement(xmlrow, tagname, {'columnname': k})
+                        newcell.text=v
+
+        else: #Default to assuming this is XML or HTML, at least for now.
+            with p.open("rb") as fl:
+                filedata = fl.read()
+                try: 
+                    newtree = ET.fromstring(filedata)
+                except ET.XMLSyntaxError: 
+                    xmldat, tidyerr = tidy_document(filedata, options={'output-xml': 1, 'indent': 0, 'tidy-mark':0})
+                    newtree = ET.fromstring(xmldat)
+                
+                #Look for id or xml:id attributes and kill them.
+                #But preserve the id data as "@origfile-id"
+                ideds = newtree.xpath('//*[@*[local-name()="id"]]')
+                for ided in ideds:
+                    nsurl = ided.xpath('namespace-uri(@*[local-name()="id"])')
+                    attname = '{{{nsurl}}}id'.format(nsurl=nsurl)
+                    attrval = ided.attrib.pop(attname)
+                    ided.attrib['origfile-id'] = attrval
         datumroot.append(newtree)
 
 def load_data_sources():
@@ -184,17 +210,20 @@ with open('furnace-data.xml', mode="wb") as outpfile:
     
 def copy_static_files():
     sss = settings['static-sources']
+    print('deleting static directories')
+    for ssname, ss in sss.items():
+        if ss['target'] != '':
+            target = Path(settings['site']['root'], ss['target']).resolve()
+            print(target)
+            if os.path.exists(target):
+                shutil.rmtree(os.path.join(settings['site']['root'], ss['target']))
 
     print('copying static files.')
-    
     for ssname, ss in sss.items():
         source = Path(ss['source']).resolve()
         target = Path(settings['site']['root'], ss['target']).resolve()
         print(str(source) + ' to ' + str(target))
-        
-        if ss['target'] != '':
-            if os.path.exists(target):
-                shutil.rmtree(os.path.join(settings['site']['root'], ss['target']))
+
         #if not os.path.exists(Path(settings['site']['root'], ss['target'])):
         #    os.makedirs(Path(settings['site']['root'], ss['target']))
         
