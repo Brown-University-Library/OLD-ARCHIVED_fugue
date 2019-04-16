@@ -1,3 +1,4 @@
+#! python
 #TODO: Enable git updates for the data sources.
 #TODO: Enable pulling the config from a git repo.
 #TODO: Make this a simple command line script.
@@ -26,6 +27,7 @@ from tidylib import tidy_document
 #Look in this script's directory.
 #TODO: Also try user's home.
 conf_file = Path(os.path.dirname(os.path.realpath(sys.argv[0])), '.furnace.conf.yaml')
+print("Configuration file:", str(conf_file))
 try:
     with open(conf_file, 'r') as f:
         fconfig = yaml.load(f)
@@ -34,9 +36,13 @@ except FileNotFoundError:
 
 
 proj_file = Path('.', 'furnace.project.yaml')
+print("Project file:", str(proj_file))
 #TODO: Throw a more specific exception if there's no project file.
 with open(proj_file, 'r') as f:
     settings = yaml.load(f)
+
+data_file = Path('.', 'furnace-data.xml').resolve()
+print('data_file', str(data_file))
 
 
 mimetypes.init('./mime.types')
@@ -165,8 +171,14 @@ def handle_filesystem_datasource(ds, dsroot):
                 try: 
                     newtree = ET.fromstring(filedata)
                 except ET.XMLSyntaxError: 
-                    xmldat, tidyerr = tidy_document(filedata, options={'output-xml': 1, 'indent': 0, 'tidy-mark':0})
-                    newtree = ET.fromstring(xmldat)
+                    xmldat, tidyerr = tidy_document(filedata, options={'input-xml': 1, 'output-xml': 1, 'indent': 0, 'tidy-mark':0})
+                    #print(str(p), xmldat)
+                    try:
+                        newtree = ET.fromstring(xmldat)
+                    except ET.XMLSyntaxError:
+                        xmldat = xmldat.decode('utf8')
+                        xmldat = '<xml>{xmldat}</xml>'.format(xmldat=xmldat)
+                        newtree = ET.fromstring(xmldat)
                 
                 #Look for id or xml:id attributes and kill them.
                 #But preserve the id data as "@origfile-id"
@@ -205,7 +217,8 @@ def load_data_sources():
 outp = load_data_sources()
 
 #TODO: configurable output file with #reasonable default.
-with open('furnace-data.xml', mode="wb") as outpfile:
+print('data_file', str(data_file))
+with data_file.open(mode="wb") as outpfile:
     outpfile.write(ET.tostring(outp, pretty_print=True))
     
 def copy_static_files():
@@ -235,7 +248,13 @@ copy_static_files()
     
 def apply_templates():
     pages = settings['pages']
-    data = ET.parse('furnace-data.xml')
+
+    print('data_file', str(data_file))
+    with  data_file.open("rb") as fl:
+        fdata = fl.read()
+    
+    data = ET.fromstring(fdata)
+    
     for pagename, page in pages.items():
         xslt = ET.parse(page['template'])
 
