@@ -3,14 +3,18 @@
 #TODO: Enable pulling the config from a git repo.
 #TODO: Make this a simple command line script.
 #TODO: Comments
+#TODO: Replace print() statements with click.echo() or logging....
 
+#TODO: Do I actually need all this?
 import logging
 import os
-import sys
+from sys import argv
 from pathlib import Path
 from datetime import datetime
-from csv import DictReader as csvreader
 import re
+
+#TODO: only needed for loading CSV files.
+from csv import DictReader as csvreader
 
 #TODO: only needed for loading one file type--should live in that module when I move it.
 import json
@@ -18,51 +22,45 @@ import json
 import yaml
 from lxml import etree as ET
 import mimetypes
-from importlib import reload, import_module
+
+#Used for static file moving/deleting.
 from distutils.dir_util import copy_tree
 import shutil
-from subprocess import run
+
+# Used for pre-/post-processing.
+import subprocess
+
+# Makes this a nice CLI.
 import click
 
-
+#Should be loaded in a datasource handler plugin.
 from tidylib import tidy_document
-
-#Look in this script's directory.
-#TODO: Also try user's home.
-conf_file = Path(os.path.dirname(os.path.realpath(sys.argv[0])), '.furnace.conf.yaml')
-print("Configuration file:", str(conf_file))
-try:
-    with open(conf_file, 'r') as f:
-        fconfig = yaml.load(f)
-except FileNotFoundError:
-    fconfig = {}
-
-
-proj_file = Path('.', 'furnace.project.yaml')
-print("Project file:", str(proj_file))
-#TODO: Throw a more specific exception if there's no project file.
-with open(proj_file, 'r') as f:
-    settings = yaml.load(f)
-
-data_file = Path('.', 'furnace-data.xml').resolve()
-print('data_file', str(data_file))
-
 
 mimetypes.init('./mime.types')
 
+
+# XML tag name fixing:
+xmltagnotfirst = r'^([^:A-Z_a-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD])'
+xmltagnotever  = r'([^-.0-9:A-Z_a-z\u00B7\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u037D\u037F-\u1FFF\u200C-\u200D\u203F\u2040\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD])'
+
+xfirst = re.compile(xmltagnotfirst)
+xnever = re.compile(xmltagnotever)
+
+def xml_name(text):
+    """Takes an arbitrary string, `text`, and turns it into a valid XML tag name."""
+    outp = xnever.sub('_', text)
+    outp = xfirst.sub('_', outp)
+    return outp
+
+
 def dict2xml(thing, targ = None):
+    """Takes a python dictionary and converts it to XML. `targ` is the parent element, if provided."""
     if targ == None:
         targ = ET.Element('data')
     
     if dict == type(thing):
         for k, v in thing.items():    
-            #TODO: Better identify bad XML tag names.
-            #TODO: Better share this code with the csv handling bit.
-            re_starts_with_digit = re.compile(r'(^[0-9])')
-            re_non_word_chars = re.compile(r'[^\w]+')
-            tagname = re_starts_with_digit.sub(r'_\1', k.lower())
-            tagname = re_non_word_chars.sub('_', tagname)
-            
+            tagname = xml_name(k.lower())
             newel = ET.SubElement(targ, tagname)
             if str == type(v):
                 newel.text = v
@@ -81,58 +79,22 @@ def dict2xml(thing, targ = None):
     
     return targ
 
-def _git(sourcerepo, targetrepo, action="pull", **kwargs):
-    gits = settings.get('git', {})
-    vend = gits.get('vendor', False)
-    keyf = gits.get('key_filename', False)
-    
-    if not keyf:
-        raise KeyError('You must set git: key_filename in .furnace.conf.yaml.')
-    
-    #Have we set a custom vendor in config.yaml? Tell dulwich to use it.
-    if bool(vend):
-        src = gits.get('srcclass', 'dulwich.client')
-        
-        from dulwich import client as _mod_client
-        src = import_module(src)
-        vend = getattr(src, vend)
-        _mod_client.get_ssh_vendor = vend
-    
-    dothis = getattr(porcelain, action)
-    dothis(sourcerepo, targetrepo,  **kwargs)
-
-def prepost(before=True):
-    if before:
-        commands = settings.get('preprocess', [])
-        print('preprocessing')
-    else:
-        commands = settings.get('postprocess', [])
-        print('postprocessing')
-    
+def process(commands):
+    """Runs `commands`, an array of arrays. Used by preprocess and postprocess."""
     if commands:
         for command in commands:
-            print(' '.join(command))
-            run(command)
+            logging.info("Running %s" % (' '.join(command), ))
+            ret = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            if ret.returncode == 0:
+                logging.debug("Ran '%s'. Result: %s" % (' '.join(ret.args), ret.stdout.decode()))
+            else:
+                raise RuntimeError("process() command '%s' failed. Error: %s" % (' '.join(ret.args), ret.stderr.decode()))
 
-prepost()
-
-
-#TODO: Logging.
-reload(logging)
-if 'logging' in settings:
-    if settings['logging']['target'] == 'file':
-        logfile = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), settings['logging']['location']))
-        logging.basicConfig(filename = logfile,
-                            level = settings['logging']['level'])
-    else:
-        logging.basicConfig(level=logging.WARNING)
-
-#TODO: Put separate phases in separate modules.
+#TODO: This should be handled in modules.
 def handle_filesystem_datasource(ds, dsroot):
-    print('handle_filesystem_datasource', ds['directory'])
+    logging.info('handle_filesystem_datasource, folder: %s' % ds['directory'])
     dr = Path(ds['directory'])
     files = sorted(dr.glob(ds['filemask']))
-    #TODO handle non-XML (markdown, txt, json...)
     
     for p in files:
         sta = p.stat()
@@ -142,7 +104,6 @@ def handle_filesystem_datasource(ds, dsroot):
         datumroot.set('pathname', str(p.parent))
         datumroot.set('fullpath', str(p))
         datumroot.set('extension', p.suffix[1:])
-        print(str(p))
 
         mimetype = ""
         try:
@@ -188,7 +149,6 @@ def handle_filesystem_datasource(ds, dsroot):
                     newtree = ET.fromstring(filedata)
                 except ET.XMLSyntaxError: 
                     xmldat, tidyerr = tidy_document(filedata, options={'input-xml': 1, 'output-xml': 1, 'indent': 0, 'tidy-mark':0})
-                    #print(str(p), xmldat)
                     try:
                         newtree = ET.fromstring(xmldat)
                     except ET.XMLSyntaxError:
@@ -206,76 +166,327 @@ def handle_filesystem_datasource(ds, dsroot):
                     ided.attrib['origfile-id'] = attrval
         datumroot.append(newtree)
 
-def load_data_sources():
+def _load_config(ctx, file):
+    logging.debug("Loading configuration file %s." % file)
+    if ctx.obj == None: ctx.obj = {}
+    with Path(file).open('r') as f:
+        ctx.obj['settings'] = yaml.load(f, Loader=yaml.FullLoader)
+    
+    ctx.obj['project-output'] = Path(ctx.obj['settings']['site']['root']).resolve()
+    logging.debug("Loaded configuration file.")
+
+def _output_dir(ctx):
+    outp = Path(ctx.obj['project_root']) / ctx.obj['settings']['site']['root']
+    outp = outp.resolve()
+    logging.debug("Checking for and returning directory at %s" % outp)
+    if not outp.exists():
+        outp.mkdir(parents=True)
+    return outp
+
+
+HERE = Path().resolve()
+
+@click.group(invoke_without_command=True, chain=True)
+@click.option('--log-level', '-L', 
+                type=click.Choice(['CRITICAL', 'ERROR', 'WARNING', 'INFO', 'DEBUG']),
+                default="WARNING", help="Set logging level. Defaults to WARNING.")
+@click.option('--project', '-p', default=Path('.', 'furnace.project.yaml'), 
+                type=click.Path(), help=r"Choose the project configuration file. Defaults to ./furnace.project.yaml. Ignored if `furnace build` is called with a repository URL.")
+@click.option('--data', '-d',  default=Path('.', 'furnace-data.xml'), 
+                type=click.Path(), help=r"Choose the data file furnace will create and use. Defaults to ./furnace-data.xml. Ignored if `furnace build` is called with a repository URL.")
+@click.pass_context
+def furnace(ctx, log_level, project, data):
+    """Static site generator using XSL templates."""
+
+    """By default, looks at furnace.project.yaml in the current directory and completes all tasks
+       needed to generate a complete site.
+    """
+    #TODO: option to not supress stdout and stderr in subprocess.run() calls.
+    #TODO: Make logging more configurable.
+    logging.basicConfig(level=getattr(logging, log_level))
+
+    click.echo("Starting furnace")
+
+    #Load configuration file.
+    ctx.obj = {'data_file': Path(data), 
+               'config_file': Path(project),}
+
+    try:
+        _load_config(ctx, project)
+        
+        ctx.obj['project_root'] = Path(project).parent.resolve()
+        os.chdir(ctx.obj['project_root'])
+        logging.debug('Changed directory to %s' % ctx.obj['project_root'])
+    except FileNotFoundError as e:
+        logging.debug(r"Loading config file failed. Hopefully we're giving build() a repository on the command line.")
+        #Since chain=True, we can't tell which subcommand is being invoked :(.
+        if ctx.invoked_subcommand == None:
+            #Fail.
+            raise RuntimeError("No Furnace configuration file found and we are not building from a git repository.")
+    
+    if ctx.invoked_subcommand is None:
+        logging.debug("No subcommand invoked. Calling build().")
+        ctx.invoke(build)
+
+@furnace.command()
+@click.pass_context
+def update(ctx):
+    """`git pull` the project's repository."""
+    targ = str(ctx.obj['project_root'])
+    cmd = "git -C %s pull origin" % (targ, )
+    logging.info("Running '%s'." % cmd)
+    ret = subprocess.run(cmd.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    logging.debug("Finished 'git pull': %s" % ret.stdout.decode())
+    if ret.returncode != 0:
+        raise RuntimeError("Failed to pull repository. Error: %s" % ret.stderr.decode())
+    _load_config(ctx, ctx.obj['config_file'])
+
+@furnace.command()
+@click.argument("repository", required=False)
+@click.option('--no-update', '-n', is_flag=True, 
+                help=r"Do not `git pull` this repository.")
+@click.option('--no-fetch', '-N', is_flag=True,
+                help=r"Do not pull or clone any git repositories. Implies -n.")
+@click.option('--no-outside-tasks', '-o', is_flag=True,
+                help=r"Do not execute pre- or post-processing tasks.")
+@click.pass_context
+def build(ctx, repository, no_update, no_fetch, no_outside_tasks):
+    """Build the entire site from scratch.
+    
+    Completes all other steps; this is done by 
+    default if no other command is specified.
+    
+    If <repository> is provided, it is assumed to be the URL of a git repository; it
+    will be cloned into a subdirectory of the current directory, then the furnace project
+    there will be built. The `project` and `data` arguments provided to `furnace` will be
+    interpreted relative to the repository's root."""
+    logging.debug("Beginning build()")
+    click.echo(r"Running 'furnace build'. (Re)-building entire site.")
+
+    if repository != None:
+        logging.debug("cloning %s." % repository)
+        localrepo = Path(repository).stem
+
+        logging.debug('local repository directory is %s' % localrepo)
+        logging.debug('localrepo:' + str(Path(localrepo)))
+        logging.debug('data: ' + str(ctx.obj['data_file']))
+        logging.debug('project: ' + str(ctx.obj['config_file']))
+        logging.debug('data_file will be %s' % str(Path(localrepo, ctx.obj['data_file'])))
+        logging.debug('project config_file will be %s' % str(Path(localrepo, ctx.obj['config_file'])))
+
+        cmd = "git clone %s %s" % (repository, localrepo)
+        logging.info("Running '%s'." % cmd)
+        ret = subprocess.run(cmd.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        logging.info("Finished 'git clone': %s" % ret.stdout.decode())
+        if ret.returncode != 0:
+            raise RuntimeError("Failed to clone repository. Error: %s" % ret.stderr.decode())
+        
+        logging.debug('Changing working directory to %s' % localrepo)
+        os.chdir(Path(localrepo))
+        ctx.obj['config_file'] = ctx.obj['config_file'].resolve()
+        _load_config(ctx, ctx.obj['config_file'])
+        logging.debug("project config_file '%s' loaded." % str(ctx.obj['config_file']))
+        ctx.obj['project_root'] = Path().resolve()
+        
+        logging.debug("Working directory changed to %s" % str(Path().resolve()))
+        
+        # Do some error checking before we spend an hour downloading gigabytes of data.
+        if not ctx.obj['data_file'].parent.exists():
+            #TODO: Should I just make it instead?
+            logging.error("Data file %s's parent directory does not exist" % str(ctx.obj['data_file']))
+            raise FileNotFoundError("Data file %s's parent directory does not exist.")
+        
+        #Verify we can touch this file before we go further.
+        ctx.obj['data_file'].touch(exist_ok=True)
+        logging.debug("Data file: %s" % str(ctx.obj['data_file'].resolve()))
+        
+        if not Path(ctx.obj['config_file']).exists():
+            raise FileNotFoundError("No furnace project found at %s." % str(Path(ctx.obj['config_file'])))
+    elif not ctx.obj.get('settings', False):
+        raise FileNotFoundError("No furnace project found.")
+
+    logging.debug("Settings: " + str(ctx.obj['settings']))
+    logging.debug("Building. Project root: %s" % str(ctx.obj['project_root']))
+
+    if not (no_update or no_fetch or repository):
+        ctx.invoke(update)
+
+    #ctx.invoke(clear)
+
+    if not no_fetch:
+        ctx.invoke(fetch)
+    
+    if not no_outside_tasks:
+        ctx.invoke(preprocess)
+    ctx.invoke(collect)
+    ctx.invoke(static)
+    ctx.invoke(generate)
+
+    if not no_outside_tasks:
+        ctx.invoke(postprocess)
+    
+    click.echo("Building complete.")
+    logging.debug("Ending build()")
+
+#TODO: Finish and test.
+'''
+@furnace.command()
+@click.pass_context
+def clear(ctx):
+    """Deletes all contents of the output directory.
+
+    Preserves files matching the patterns in settings.clear.exclude"""
+
+    #NOTE: os.walk() is our friend. Maybe also fnmatch.fnmatch().
+
+
+    outdir = _output_dir(ctx)
+    click.echo("Clearing the output directory.")
+    excludes = ctx.obj['settings'].get('clear', {}).get('exclude', [])
+    logging.debug("Excludes: " + str(excludes))
+    def exclude_path(pth):
+        """Do any of the patterns match pth?"""
+        for pat in excludes:
+            if pth.match(pat):
+                return True
+        return False
+
+    for dr in [x for x in outdir.iterdir() if x.is_dir() and not exclude_path(x.resolve())]:
+        shutil.rmtree(str(dr.resolve()))
+    
+    for fl in [x for x in outdir.iterdir() if x.is_file()]:
+        os.unlink(str(fl.resolve()))
+'''
+        
+@furnace.command()
+@click.pass_context
+def preprocess(ctx):
+    """Runs all preprocessing directives."""
+    #TODO: Should be an option to supress exceptions here.
+    outdir = _output_dir(ctx)
+    logging.debug("Preprocess: Output dir: %s" % outdir)
+    click.echo("Running preprocess tasks.")
+    commands = ctx.obj['settings'].get('preprocess', [])
+    process(commands)
+
+@furnace.command()
+@click.pass_context
+def fetch(ctx):
+    """Fetches git repositories."""
+    #For now we'll use subprocess.run(). Is there any benefit to dulwich instead?
+    #TODO: should probably put this logic in separate modules so we can support svn, fossil, SFTP, etc. sources.
+    #TODO: git might should support checking out specific branches/tags.
+
+    click.echo('Fetching repositories.')
+
+    repositories = ctx.obj['settings']['repositories']
+    logging.info('Pulling %d repositories.' % len(repositories))
+
+    for repo in repositories:
+        if not Path(repo['target']).exists():
+            targ = str(Path(repo['target']).resolve())
+            rootdir = str(Path(repo['target']).resolve().parent)
+            cmd = "git -C %s clone %s %s" % (rootdir, repo['remote'], targ)
+            logging.info('%s does not exist; cloning %s into it.' % (repo['target'], repo['remote']))
+            logging.debug("Running '%s'." % cmd)
+            ret = subprocess.run(cmd.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            logging.debug("Finished 'git clone': %s" % ret.stdout.decode())
+            if ret.returncode != 0:
+                raise RuntimeError("Failed to clone repository. Error: %s" % ret.stderr.decode())
+        else: 
+            targ = str(Path(repo['target']).resolve())
+            cmd = "git -C %s pull" % (targ, )
+            logging.info("Running '%s'." % cmd)
+            ret = subprocess.run(cmd.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            logging.debug("Finished 'git pull': %s" % ret.stdout.decode())
+            if ret.returncode != 0:
+                raise RuntimeError("Failed to pull repository. Error: %s" % ret.stderr.decode())
+
+@furnace.command()
+@click.pass_context
+def collect(ctx):
+    """Collects all datasources.
+    
+    Collects all data described in furnace.project.yaml under data-sources
+    into the xml file specified by --data. Does not imply `fetch`."""
+    click.echo("Collecting data")
+    outdir = _output_dir(ctx)
+    logging.debug("Collecting. Output dir: %s" % outdir)
     xmlroot = ET.Element('furnace-data')
     
     projroot = ET.SubElement(xmlroot, 'furnace-config')
 
     #Convert our settings file to XML and add to the XML data document.
-    dict2xml(settings, projroot)
+    dict2xml(ctx.obj['settings'], projroot)
 
     dssroot = ET.SubElement(xmlroot, 'data-sources')
-    dss = settings['data-sources']
+    dss = ctx.obj['settings']['data-sources']
     for dsname, ds in dss.items():
+        logging.debug("Collecting datasource '%s'." % dsname)
         #TODO: Dynamically load modules to deal with different DS types.
         dsroot = ET.SubElement(dssroot, dsname)
         if 'filesystem' == ds['type']:
             handle_filesystem_datasource(ds, dsroot)
-        if 'git' == ds['type']:
-            #TODO: git pull
-            if 'sources' in ds:
-                for scname, sc in ds['sources'].items():
-                    scroot = ET.SubElement(dsroot, scname)
-                    if 'filesystem' == sc['type']:
-                        handle_filesystem_datasource(sc, scroot)
-    return xmlroot
 
-outp = load_data_sources()
+    data_file = ctx.obj['data_file']
 
-#TODO: configurable output file with #reasonable default.
-print('data_file', str(data_file))
-with data_file.open(mode="wb") as outpfile:
-    outpfile.write(ET.tostring(outp, pretty_print=True))
+    logging.info('Writing XML data to %s.' % str(data_file))
+    data_file.touch(exist_ok=True)
+    with data_file.open(mode="wb") as outpfile:
+        outpfile.write(ET.tostring(xmlroot, pretty_print=True))
     
-def copy_static_files():
-    sss = settings['static-sources']
-    print('deleting static directories')
+    #No need to read this if it's already in memory.
+    ctx.obj['xmldata'] = xmlroot
+    
+@furnace.command()
+@click.pass_context
+def static(ctx):
+    """Copies static directories into output."""
+    click.echo("Handling static files.")
+    outdir = _output_dir(ctx)
+    logging.debug("Moving static files. Output dir: %s" % outdir)
+    sss = ctx.obj['settings']['static-sources']
+    logging.info('Deleting static directories')
     for ssname, ss in sss.items():
         if ss['target'] != '':
-            target = Path(settings['site']['root'], ss['target']).resolve()
-            print(target)
-            if os.path.exists(target):
-                shutil.rmtree(os.path.join(settings['site']['root'], ss['target']))
+            target = Path(outdir, ss['target']).resolve()
+            logging.debug("Deleting %s." % target)
+            if target.exists():
+                #TODO: Why does this sometimes throw errors if I don't ignore_errors?
+                shutil.rmtree(target, ignore_errors=False)
 
-    print('copying static files.')
+    logging.info('Copying static files.')
     for ssname, ss in sss.items():
         source = Path(ss['source']).resolve()
-        target = Path(settings['site']['root'], ss['target']).resolve()
-        print(str(source) + ' to ' + str(target))
-
-        #if not os.path.exists(Path(settings['site']['root'], ss['target'])):
-        #    os.makedirs(Path(settings['site']['root'], ss['target']))
-        
+        target = Path(ctx.obj['project-output'], ss['target']).resolve()
+        logging.debug("Moving " + str(source) + ' to ' + str(target) + ".")
         copy_tree(str(source), str(target))
-        
-#TODO: Click should decide whether to do this.
-#TODO: Maybe replace this with rsync?
-copy_static_files()
-    
-def apply_templates():
-    pages = settings['pages']
 
-    print('data_file', str(data_file))
-    with  data_file.open("rb") as fl:
-        fdata = fl.read()
+@furnace.command()
+@click.pass_context
+def generate(ctx):
+    """Generates pages from XSL templates. Does not imply `collect` and will fail if the file specified by --data doesn't exist."""
+    click.echo('Generating pages.')
+    outdir = _output_dir(ctx)
+    logging.debug("Generating. Output directory: %s" % str(outdir))
+
+    pages = ctx.obj['settings']['pages']
+
+    data_file = ctx.obj['data_file']
     
-    data = ET.fromstring(fdata)
+    if 'xmldata' in ctx.obj:
+        logging.debug("Using previously-loaded data.")
+    else:
+        logging.debug("Reading data from %s" % str(data_file))
+        with  data_file.open("rb") as fl:
+            fdata = fl.read()
+        ctx.obj['xmldata'] = ET.fromstring(fdata)
+    data = ctx.obj['xmldata']
     
     for pagename, page in pages.items():
+        logging.info("Generating page '%s'." % pagename)
         xslt = ET.parse(page['template'])
-
         transform = ET.XSLT(xslt)
-
         
         perpage = page.get('perpage', 1)
         items = page.get('items', False)
@@ -315,39 +526,27 @@ def apply_templates():
             #TODO: Make this an option somewhere. 
             pn = str(i).zfill(2)
             flname = page['uri'].replace('{pagenum}', pn)
-            target = Path(settings['site']['root'], flname)
+            target = Path(outdir, flname)
             
             if not target.parent.exists():
                 target.parent.mkdir(parents=True)
             
-            print("Outputting "+str(target))
+            logging.debug("Outputting "+str(target))
             #with target.open('wb') as f:
             result.write_output(str(target))
 
-apply_templates()
-
-prepost(False)
-            
-"""
-@click.group(invoke_without_command=True)
-@click.argument('config', default=os.path.join(here, 'config.yaml'))
+@furnace.command()
 @click.pass_context
-def furnace(cxt, config):
-    #Load the furnace settings file and the project config.
-    click.echo(config)
+def postprocess(ctx):
+    """Runs all postprocessing directives."""
+    #TODO: Should be an option to supress exceptions here.
+    outdir = _output_dir(ctx)
+    logging.debug("Postprocessing. Output dir: %s" % outdir)
+    click.echo("Running postprocess tasks.")
+    commands = ctx.obj['settings'].get('postprocess', [])
+    process(commands)
 
-@furnace.command()
-def git():
-    pass
-    
-@furnace.command()
-def builddata():
-    pass
-
-@furnace.command()
-def copystatic():
-    pass
-    
 if __name__ == '__main__':
+    STARTED_IN = path().resolve()
     furnace()
-"""
+    os.chdir(STARTED_IN)
