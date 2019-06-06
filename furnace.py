@@ -8,7 +8,7 @@
 #TODO: Do I actually need all this?
 import logging
 import os
-from sys import argv
+from sys import argv, executable
 from pathlib import Path
 from datetime import datetime
 import re
@@ -38,6 +38,7 @@ from tidylib import tidy_document
 
 mimetypes.init('./mime.types')
 
+PYTHON_EXEC = executable
 
 # XML tag name fixing:
 xmltagnotfirst = r'^([^:A-Z_a-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD])'
@@ -83,8 +84,10 @@ def process(commands):
     """Runs `commands`, an array of arrays. Used by preprocess and postprocess."""
     if commands:
         for command in commands:
-            logging.info("Running %s" % (' '.join(command), ))
-            ret = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            # Make sure we run outside scripts with the same python as furnace.
+            cmd = [ PYTHON_EXEC if x == 'python' else x for x in command ]
+            logging.info("Running %s" % (' '.join(cmd), ))
+            ret = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             if ret.returncode == 0:
                 logging.debug("Ran '%s'. Result: %s" % (' '.join(ret.args), ret.stdout.decode()))
             else:
@@ -547,6 +550,6 @@ def postprocess(ctx):
     process(commands)
 
 if __name__ == '__main__':
-    STARTED_IN = path().resolve()
+    STARTED_IN = Path().resolve()
     furnace()
     os.chdir(STARTED_IN)
