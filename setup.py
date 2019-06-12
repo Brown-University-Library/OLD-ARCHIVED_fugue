@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='Furnace',
-    version='0.8d',
+    version='0.8e',
     py_modules=['furnace'],
     install_requires=[
         "certifi>=2018.8.24",

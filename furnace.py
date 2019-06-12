@@ -39,6 +39,7 @@ from tidylib import tidy_document
 mimetypes.init('./mime.types')
 
 PYTHON_EXEC = executable
+HUGE_PARSER = ET.XMLParser(huge_tree=True)
 
 # XML tag name fixing:
 xmltagnotfirst = r'^([^:A-Z_a-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD])'
@@ -95,7 +96,7 @@ def process(commands):
 
 #TODO: This should be handled in modules.
 def handle_filesystem_datasource(ds, dsroot):
-    logging.info('handle_filesystem_datasource, folder: %s' % ds['directory'])
+    logging.debug('handle_filesystem_datasource, folder: %s' % ds['directory'])
     dr = Path(ds['directory'])
     files = sorted(dr.glob(ds['filemask']))
     
@@ -104,8 +105,8 @@ def handle_filesystem_datasource(ds, dsroot):
 
         datumroot = ET.SubElement(dsroot, 'file')
         datumroot.set('filename', p.name)
-        datumroot.set('pathname', str(p.parent))
-        datumroot.set('fullpath', str(p))
+        datumroot.set('pathname', p.parent.as_posix())
+        datumroot.set('fullpath', p.as_posix())
         datumroot.set('extension', p.suffix[1:])
 
         mimetype = ""
@@ -149,15 +150,18 @@ def handle_filesystem_datasource(ds, dsroot):
             with p.open("rb") as fl:
                 filedata = fl.read()
                 try: 
-                    newtree = ET.fromstring(filedata)
+                    newtree = ET.fromstring(filedata, HUGE_PARSER)
                 except ET.XMLSyntaxError: 
+                    #Run the input through Tidy.
+                    #TODO: Try with these options (They successfully load the Atalanta data files, but I don't know if the finished site still works.):
+                    #xmldat, tidyerr = tidy_document(filedata, options={'input-xml': 0, 'output-xhtml': 1, 'indent': 0, 'tidy-mark':0, 'quote-nbsp': 1, 'char-encoding': 'utf8', 'numeric-entities': 1})
                     xmldat, tidyerr = tidy_document(filedata, options={'input-xml': 1, 'output-xml': 1, 'indent': 0, 'tidy-mark':0})
                     try:
-                        newtree = ET.fromstring(xmldat)
+                        newtree = ET.fromstring(xmldat, HUGE_PARSER)
                     except ET.XMLSyntaxError:
                         xmldat = xmldat.decode('utf8')
                         xmldat = '<xml>{xmldat}</xml>'.format(xmldat=xmldat)
-                        newtree = ET.fromstring(xmldat)
+                        newtree = ET.fromstring(xmldat, HUGE_PARSER)
                 
                 #Look for id or xml:id attributes and kill them.
                 #But preserve the id data as "@origfile-id"
@@ -425,7 +429,7 @@ def collect(ctx):
     dssroot = ET.SubElement(xmlroot, 'data-sources')
     dss = ctx.obj['settings']['data-sources']
     for dsname, ds in dss.items():
-        logging.debug("Collecting datasource '%s'." % dsname)
+        logging.info("Collecting datasource '%s'." % dsname)
         #TODO: Dynamically load modules to deal with different DS types.
         dsroot = ET.SubElement(dssroot, dsname)
         if 'filesystem' == ds['type']:
@@ -483,7 +487,7 @@ def generate(ctx):
         logging.debug("Reading data from %s" % str(data_file))
         with  data_file.open("rb") as fl:
             fdata = fl.read()
-        ctx.obj['xmldata'] = ET.fromstring(fdata)
+        ctx.obj['xmldata'] = ET.fromstring(fdata, HUGE_PARSER)
     data = ctx.obj['xmldata']
     
     for pagename, page in pages.items():
