@@ -1,27 +1,15 @@
 #! python
-#TODO: Enable git updates for the data sources.
-#TODO: Enable pulling the config from a git repo.
-#TODO: Make this a simple command line script.
-#TODO: Comments
-#TODO: Replace print() statements with click.echo() or logging....
+#TODO: Comments, particularly in the `tools` module.
 
 #TODO: Do I actually need all this?
 import logging
 import os
 from sys import argv, executable
 from pathlib import Path
-from datetime import datetime
 import re
-
-#TODO: only needed for loading CSV files.
-from csv import DictReader as csvreader
-
-#TODO: only needed for loading one file type--should live in that module when I move it.
-import json
 
 import yaml
 from lxml import etree as ET
-import mimetypes
 
 #Used for static file moving/deleting.
 from distutils.dir_util import copy_tree
@@ -33,56 +21,15 @@ import subprocess
 # Makes this a nice CLI.
 import click
 
-#Should be loaded in a datasource handler plugin.
-from tidylib import tidy_document
+from tools.datasource_handlers import DSHandler_Factory
+from tools import *
 
-mimetypes.init('./mime.types')
-
-PYTHON_EXEC = executable
 HUGE_PARSER = ET.XMLParser(huge_tree=True)
-
-# XML tag name fixing:
-xmltagnotfirst = r'^([^:A-Z_a-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD])'
-xmltagnotever  = r'([^-.0-9:A-Z_a-z\u00B7\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u037D\u037F-\u1FFF\u200C-\u200D\u203F\u2040\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD])'
-
-xfirst = re.compile(xmltagnotfirst)
-xnever = re.compile(xmltagnotever)
-
-def xml_name(text):
-    """Takes an arbitrary string, `text`, and turns it into a valid XML tag name."""
-    outp = xnever.sub('_', text)
-    outp = xfirst.sub('_', outp)
-    return outp
-
-
-def dict2xml(thing, targ = None):
-    """Takes a python dictionary and converts it to XML. `targ` is the parent element, if provided."""
-    if targ == None:
-        targ = ET.Element('data')
-    
-    if dict == type(thing):
-        for k, v in thing.items():    
-            tagname = xml_name(k.lower())
-            newel = ET.SubElement(targ, tagname)
-            if str == type(v):
-                newel.text = v
-            elif bytes == type(v):
-                newel.text = v.decode()
-            else: 
-                dict2xml(v, newel)
-    elif list == type(thing):
-        for v in thing:
-            newel = ET.SubElement(targ, 'item')
-            dict2xml(v, newel)
-    elif bytes == type(thing):
-        targ.text = thing.decode()
-    else:
-        targ.text = str(thing)
-    
-    return targ
+PYTHON_EXEC = executable
 
 def process(commands):
-    """Runs `commands`, an array of arrays. Used by preprocess and postprocess."""
+    """Runs `commands`, an array of arrays. Used by preprocess() and postprocess()."""
+    #TODO: Should be an option to supress exceptions here.
     if commands:
         for command in commands:
             # Make sure we run outside scripts with the same python as furnace.
@@ -93,85 +40,6 @@ def process(commands):
                 logging.debug("Ran '%s'. Result: %s" % (' '.join(ret.args), ret.stdout.decode()))
             else:
                 raise RuntimeError("process() command '%s' failed. Error: %s" % (' '.join(ret.args), ret.stderr.decode()))
-
-#TODO: This should be handled in modules.
-def handle_filesystem_datasource(ds, dsroot):
-    logging.debug('handle_filesystem_datasource, folder: %s' % ds['directory'])
-    dr = Path(ds['directory'])
-    files = sorted(dr.glob(ds['filemask']))
-    
-    for p in files:
-        sta = p.stat()
-
-        datumroot = ET.SubElement(dsroot, 'file')
-        datumroot.set('filename', p.name)
-        datumroot.set('pathname', p.parent.as_posix())
-        datumroot.set('fullpath', p.as_posix())
-        datumroot.set('extension', p.suffix[1:])
-
-        mimetype = ""
-        try:
-            mimetype = mimetypes.guess_type(p.name)[0]
-            datumroot.set('mime-type', mimetypes.guess_type(p.name)[0])
-        except TypeError:
-            pass
-        datumroot.set('mtime', datetime.utcfromtimestamp(sta.st_mtime).isoformat())
-        datumroot.set('atime', datetime.utcfromtimestamp(sta.st_atime).isoformat())
-        datumroot.set('size', str(sta.st_size))
-
-    
-        #Check mime-type here.
-        #TODO: have different file types handled by plugins.
-        if "text/csv" == mimetype:
-            with p.open("r", encoding='utf8') as fl:
-                rdr = csvreader(fl)
-                rowcount = 0
-                newtree = ET.Element('csvdata')
-                
-                re_starts_with_digit = re.compile(r'(^[0-9])')
-                re_non_word_chars = re.compile(r'[^\w]+')
-
-                for row in rdr:
-                    rowcount += 1
-                    xmlrow = ET.SubElement(newtree, 'item')
-                    for k, v in row.items():
-                        tagname = re_starts_with_digit.sub(r'_\1', k.lower())
-                        tagname = re_non_word_chars.sub('_', tagname)
-                        newcell = ET.SubElement(xmlrow, tagname, {'columnname': k})
-                        newcell.text=v
-
-        elif "application/json" == mimetype:
-            with p.open("r", encoding='utf8') as fl:
-                jdata = json.load(fl)
-                newtree = ET.Element('jsondata')
-                dict2xml(jdata, newtree)
-
-        else: #Default to assuming this is XML or HTML, at least for now.
-            with p.open("rb") as fl:
-                filedata = fl.read()
-                try: 
-                    newtree = ET.fromstring(filedata, HUGE_PARSER)
-                except ET.XMLSyntaxError: 
-                    #Run the input through Tidy.
-                    #TODO: Try with these options (They successfully load the Atalanta data files, but I don't know if the finished site still works.):
-                    #xmldat, tidyerr = tidy_document(filedata, options={'input-xml': 0, 'output-xhtml': 1, 'indent': 0, 'tidy-mark':0, 'quote-nbsp': 1, 'char-encoding': 'utf8', 'numeric-entities': 1})
-                    xmldat, tidyerr = tidy_document(filedata, options={'input-xml': 1, 'output-xml': 1, 'indent': 0, 'tidy-mark':0})
-                    try:
-                        newtree = ET.fromstring(xmldat, HUGE_PARSER)
-                    except ET.XMLSyntaxError:
-                        xmldat = xmldat.decode('utf8')
-                        xmldat = '<xml>{xmldat}</xml>'.format(xmldat=xmldat)
-                        newtree = ET.fromstring(xmldat, HUGE_PARSER)
-                
-                #Look for id or xml:id attributes and kill them.
-                #But preserve the id data as "@origfile-id"
-                ideds = newtree.xpath('//*[@*[local-name()="id"]]')
-                for ided in ideds:
-                    nsurl = ided.xpath('namespace-uri(@*[local-name()="id"])')
-                    attname = '{{{nsurl}}}id'.format(nsurl=nsurl)
-                    attrval = ided.attrib.pop(attname)
-                    ided.attrib['origfile-id'] = attrval
-        datumroot.append(newtree)
 
 def _load_config(ctx, file):
     logging.debug("Loading configuration file %s." % file)
@@ -291,6 +159,7 @@ def build(ctx, repository, no_update, no_fetch, no_outside_tasks):
         logging.debug('Changing working directory to %s' % localrepo)
         os.chdir(Path(localrepo))
         ctx.obj['config_file'] = ctx.obj['config_file'].resolve()
+        #TODO: Fail more elegantly if we can't find a config file.
         _load_config(ctx, ctx.obj['config_file'])
         logging.debug("project config_file '%s' loaded." % str(ctx.obj['config_file']))
         ctx.obj['project_root'] = Path().resolve()
@@ -432,8 +301,9 @@ def collect(ctx):
         logging.info("Collecting datasource '%s'." % dsname)
         #TODO: Dynamically load modules to deal with different DS types.
         dsroot = ET.SubElement(dssroot, dsname)
-        if 'filesystem' == ds['type']:
-            handle_filesystem_datasource(ds, dsroot)
+        
+        handler = DSHandler_Factory().build(ds)
+        handler.write(dsroot)
 
     data_file = ctx.obj['data_file']
 
@@ -473,6 +343,7 @@ def static(ctx):
 @click.pass_context
 def generate(ctx):
     """Generates pages from XSL templates. Does not imply `collect` and will fail if the file specified by --data doesn't exist."""
+    #TODO: Two-step generation (HTML -> XSL -> HTML)
     click.echo('Generating pages.')
     outdir = _output_dir(ctx)
     logging.debug("Generating. Output directory: %s" % str(outdir))
@@ -546,7 +417,6 @@ def generate(ctx):
 @click.pass_context
 def postprocess(ctx):
     """Runs all postprocessing directives."""
-    #TODO: Should be an option to supress exceptions here.
     outdir = _output_dir(ctx)
     logging.debug("Postprocessing. Output dir: %s" % outdir)
     click.echo("Running postprocess tasks.")
