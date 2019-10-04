@@ -21,8 +21,8 @@ import subprocess
 # Makes this a nice CLI.
 import click
 
-from tools.datasource_handlers import DSHandler_Factory
-from tools import *
+from .tools.datasource_handlers import DSHandler_Factory
+from .tools import *
 
 HUGE_PARSER = ET.XMLParser(huge_tree=True)
 PYTHON_EXEC = executable
