@@ -12,7 +12,7 @@ class Abstract_FileHandler(ABC):
     @classmethod
     def mimetypes(cls):
         try:
-            return bool(cls.Meta.mimetypes)
+            return cls.Meta.mimetypes
         except:
             return []
 

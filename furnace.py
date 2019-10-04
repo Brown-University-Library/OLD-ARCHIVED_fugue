@@ -305,6 +305,7 @@ def collect(ctx):
         handler = DSHandler_Factory().build(ds)
         handler.write(dsroot)
 
+
     data_file = ctx.obj['data_file']
 
     logging.info('Writing XML data to %s.' % str(data_file))
@@ -365,45 +366,31 @@ def generate(ctx):
         logging.info("Generating page '%s'." % pagename)
         xslt = ET.parse(page['template'])
         transform = ET.XSLT(xslt)
-        
-        perpage = page.get('perpage', 1)
-        items = page.get('items', False)
 
-        if items:
-            xitems = data.xpath(page['items'])
-            pagecount = int(len(xitems) / perpage)
-            if len(xitems) % perpage:
-                pagecount += 1
-        else: 
-            pagecount = 1
-            perpage = 1
-                
         #TODO: Pagination should be optional.
-        for i in range(1, pagecount+1):
-            params = {
-                'pagenum':      str(i),
-                'pagecount':    str(pagecount),
-                'perpage':      str(perpage),
-                'pagename':     "'{}'".format(pagename),
-            }
+        params = {
+            'pagename':     "'{}'".format(pagename),
+            'output_dir':   "'{}'".format(outdir.as_posix())
+        }
 
-            for k, v in page.items():
-                if k not in params.keys():
-                    if type(v) in (int, float):
-                        params[k] = str(v)
-                    if type(v) == str:
-                        if v.startswith('xpath:'):
-                            params[k] = v[len('xpath:'):]
-                        elif 'items' == k:
-                            params[k] = v
-                        else: #TODO: This will break stuff if v contains a '
-                            params[k] = "'{}'".format(v)
-            
-            result = transform(data, **params)
-            
-            #TODO: Make this an option somewhere. 
-            pn = str(i).zfill(2)
-            flname = page['uri'].replace('{pagenum}', pn)
+        for k, v in page.items():
+            if k not in params.keys():
+                if type(v) in (int, float):
+                    params[k] = str(v)
+                if type(v) == str:
+                    if v.startswith('xpath:'):
+                        params[k] = v[len('xpath:'):]
+                    elif 'items' == k: #TODO: Remove. Legacy, for pagination.
+                        params[k] = v
+                    else: #TODO: This will break stuff if v contains a '
+                        params[k] = "'{}'".format(v)
+        
+        result = transform(data, **params)
+        
+        #TODO: Make this an option somewhere. 
+
+        if page['uri']: #If uri is false, just discard the from this template.
+            flname = page['uri']
             target = Path(outdir, flname)
             
             if not target.parent.exists():

@@ -24,6 +24,6 @@ class FTHandler_Factory():
                             self.default = obj
                     except:
                         pass
-
+        
     def build(self, mimetype):
         return self.handlers.get(mimetype, self.default)
