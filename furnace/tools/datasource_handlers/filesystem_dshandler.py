@@ -7,7 +7,7 @@ import re
 import mimetypes
 mimetypes.init('./mime.types')
 
-from .filetype_handlers import _filetypehandler_abstract
+#from .filetype_handlers import _filetypehandler_abstract
 
 #TODO: only needed for loading CSV files.
 from csv import DictReader as csvreader
@@ -15,8 +15,8 @@ from csv import DictReader as csvreader
 #TODO: only needed for loading one file type--should live in that module when I move it.
 import json
 
-from tools import *
-from tools.datasource_handlers.filetype_handlers import FTH_Factory
+from furnace.tools import *
+from furnace.tools.datasource_handlers.filetype_handlers import FTH_Factory
 
 HUGE_PARSER = ET.XMLParser(huge_tree=True)
 

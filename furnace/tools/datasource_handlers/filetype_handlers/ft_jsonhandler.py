@@ -1,5 +1,5 @@
 from ._filetypehandler_abstract import Abstract_FileHandler
-from tools import dict2xml
+from furnace.tools import dict2xml
 import json
 from lxml import etree as ET
 

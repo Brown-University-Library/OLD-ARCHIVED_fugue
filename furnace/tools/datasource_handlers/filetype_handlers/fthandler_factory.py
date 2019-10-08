@@ -15,7 +15,7 @@ class FTHandler_Factory():
         for fl in THIS_DIR.glob('*.py'):
             mod = fl.stem
             if not mod.startswith('_') and mod != 'fthandler_factory':
-                mod = import_module('tools.datasource_handlers.filetype_handlers.'+mod)
+                mod = import_module('furnace.tools.datasource_handlers.filetype_handlers.'+mod)
                 for name, obj in getmembers(mod, isclass):
                     try:
                         for mt in obj.mimetypes():

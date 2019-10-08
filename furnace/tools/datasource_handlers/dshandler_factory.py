@@ -10,7 +10,7 @@ class DSHandler_Factory():
         
         #TODO: Error handling.
         handler_type = desc['type']
-        mod = import_module('.' + handler_type + '_dshandler', 'tools.datasource_handlers')
+        mod = import_module('furnace.tools.datasource_handlers.' + handler_type + '_dshandler')
         clsname = handler_type.title() + "_DSHandler"
         handler = getattr(mod, clsname)
         return handler(desc)
