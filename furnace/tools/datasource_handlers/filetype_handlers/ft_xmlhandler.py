@@ -10,7 +10,9 @@ class XML_FileHandler(Abstract_FileHandler):
 
     def process(path):
         with path.open("rb") as fl:
-            filedata = fl.read()
+            #filedata = fl.open()
+            #See if this helps with Crystal's issue.
+            filedata = fl.open("r", encoding='utf8')
             hugeparser = ET.XMLParser(huge_tree=True)
             
             try: 
