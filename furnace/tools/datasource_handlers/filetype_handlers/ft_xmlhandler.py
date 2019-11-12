@@ -9,15 +9,17 @@ class XML_FileHandler(Abstract_FileHandler):
         default = True
 
     def process(path):
-        with path.open("rb") as fl:
-            #filedata = fl.open()
-            #See if this helps with Crystal's issue.
-            filedata = fl.open("r", encoding='utf8')
-            hugeparser = ET.XMLParser(huge_tree=True)
+
+        #with path.open("r", encoding='utf8') as fl:
+            hugeparser = ET.XMLParser(huge_tree=True, encoding='utf8')
+            #filedata = fl.read()
             
             try: 
-                newtree = ET.fromstring(filedata, hugeparser)
-            except ET.XMLSyntaxError: 
+                newtree = ET.parse(str(path), parser=hugeparser).getroot()
+
+            except ET.XMLSyntaxError:
+                with path.open('rb') as fl: 
+                    filedata = fl.read()
                 #Run the input through Tidy.
                 #TODO: Try with these options (They successfully load the Atalanta data files, but I don't know if the finished site still works.):
                 #xmldat, tidyerr = tidy_document(filedata, options={'input-xml': 0, 'output-xhtml': 1, 'indent': 0, 'tidy-mark':0, 'quote-nbsp': 1, 'char-encoding': 'utf8', 'numeric-entities': 1})
