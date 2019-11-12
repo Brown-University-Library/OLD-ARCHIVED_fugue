@@ -310,8 +310,10 @@ def collect(ctx):
 
     logging.info('Writing XML data to %s.' % str(data_file))
     data_file.touch(exist_ok=True)
-    with data_file.open(mode="wb") as outpfile:
-        outpfile.write(ET.tostring(xmlroot, pretty_print=True))
+    
+    xmlroot.getroottree().write(str(data_file), pretty_print=True, encoding="utf8")
+    #with data_file.open(mode="wb") as outpfile:
+    #    outpfile.write(ET.tostring(xmlroot, pretty_print=True))
     
     #No need to read this if it's already in memory.
     ctx.obj['xmldata'] = xmlroot
