@@ -35,5 +35,5 @@ pages:
     
 static-sources:
     emblem-css:
-        source: ./static
-        target: static
+        source: ./static/css
+        target: css
