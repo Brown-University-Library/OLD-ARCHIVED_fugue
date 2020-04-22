@@ -1,0 +1,85 @@
+<html>
+  <head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>The fugue Command</title>
+    <link rel="stylesheet" href="/css/docs.css">
+    <style>
+        
+    </style>
+  </head>
+  <body>
+<nav class="navbar is-light has-text-black-ter" role="navigation" aria-label="main navigation">
+    <div class="navbar-menu container">
+        <div class="navbar-start">
+            <a href="/" class="navbar-item">
+            Home
+            </a>
+        <div class="navbar-start"><a href="/fugue-command.html" class="navbar-item">The fugue Command</a></div>
+<div class="navbar-start"><a href="/fugue-project.html" class="navbar-item">Project Configuration</a></div>
+</div>
+        
+        <div class="navbar-end">
+            <a href="https://github.com/Brown-University-Library/fugue" class="navbar-item">
+                Github
+            </a>
+        </div>
+    </div>
+</nav>
+      <section class="hero is-primary">
+        <div class="hero-body">
+          <div class="container">
+            <h1 class="title">The fugue Command</h1>
+            
+          </div>
+        </div>
+      </section>
+      <section class="section">
+        <div class="container">
+          <section id="pagebody" class="content"><h2>Usage</h2>
+<h4>Simplest case:</h4>
+<p><code>
+cd /path/to/your/project
+fugue
+</code></p>
+<p>This will attempt to run all of <a href="index.html"><code>fugue</code>'s tasks</a> and build the site.</p>
+<p>Alternatively, if you haven't yet downloaded the project's repository:</p>
+<p><code>
+fugue build [git repository address]
+</code></p>
+<p>will clone your project</p>
+<p>It is also possible to run any individual task or tasks.</p>
+<p><code>
+fugue fetch collect
+</code></p>
+<h4>Command Help Text</h4>
+<p>```
+Usage: fugue [OPTIONS] COMMAND1 [ARGS]... [COMMAND2 [ARGS]...]...</p>
+<p>Static site generator using XSL templates.</p>
+<p>Options:
+  -L, --log-level [CRITICAL|ERROR|WARNING|INFO|DEBUG]
+                                  Set logging level. Defaults to WARNING.
+  -p, --project PATH              Choose the project configuration file.
+                                  Defaults to ./fugue.project.yaml. Ignored
+                                  if <code>fugue build</code> is called with a
+                                  repository URL.
+  -d, --data PATH                 Choose the data file fugue will create and
+                                  use. Defaults to ./fugue-data.xml. Ignored
+                                  if <code>fugue build</code> is called with a
+                                  repository URL.
+  --help                          Show this message and exit.</p>
+<p>Commands:
+  build        Build the entire site from scratch.
+  collect      Collects all datasources.
+  fetch        Fetches git repositories.
+  generate     Generates pages from XSL templates.
+  postprocess  Runs all postprocessing directives.
+  preprocess   Runs all preprocessing directives.
+  static       Copies static directories into output.
+  update       <code>git pull</code> the project's repository.
+```</p></section>
+        </div>
+      </section>
+  </body>
+</html>
