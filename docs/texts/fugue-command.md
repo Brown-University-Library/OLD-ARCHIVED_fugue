@@ -1,4 +1,33 @@
-# Fugue: XSLT-based site generator
+---
+title: The fugue Command
+---
+## Usage
+
+#### Simplest case:
+
+```
+cd /path/to/your/project
+fugue
+```
+
+This will attempt to run all of [`fugue`'s tasks](index.html) and build the site.
+
+Alternatively, if you haven't yet downloaded the project's repository:
+
+```
+fugue build [git repository address]
+```
+
+will clone your project
+
+It is also possible to run any individual task or tasks.
+
+```
+fugue fetch collect
+```
+
+
+#### Command Help Text
 
 ```
 Usage: fugue [OPTIONS] COMMAND1 [ARGS]... [COMMAND2 [ARGS]...]...

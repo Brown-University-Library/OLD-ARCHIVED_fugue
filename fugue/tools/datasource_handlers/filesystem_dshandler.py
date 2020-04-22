@@ -5,7 +5,7 @@ from datetime import datetime
 import re
 
 import mimetypes
-mimetypes.init('./mime.types')
+mimetypes.init(['../mime.types'])
 
 #from .filetype_handlers import _filetypehandler_abstract
 
@@ -15,8 +15,8 @@ from csv import DictReader as csvreader
 #TODO: only needed for loading one file type--should live in that module when I move it.
 import json
 
-from furnace.tools import *
-from furnace.tools.datasource_handlers.filetype_handlers import FTH_Factory
+from fugue.tools import *
+from fugue.tools.datasource_handlers.filetype_handlers import FTH_Factory
 
 HUGE_PARSER = ET.XMLParser(huge_tree=True)
 
@@ -26,6 +26,7 @@ class Filesystem_DSHandler():
     default = True
     
     def __init__(self, desc):
+        self.desc = desc
         self.dir = desc['directory']
         self.glob = desc['filemask']
 
@@ -45,6 +46,7 @@ class Filesystem_DSHandler():
             datumroot.set('fullpath', p.as_posix())
             datumroot.set('extension', p.suffix[1:])
 
+
             mimetype = ""
             try:
                 mimetype = mimetypes.guess_type(p.name)[0]
@@ -57,6 +59,6 @@ class Filesystem_DSHandler():
             datumroot.set('size', str(sta.st_size))
 
             handler = FTH_Factory.build(mimetype)
-            newtree = handler.process(p)
+            newtree = handler.process(p, self.desc)
 
             datumroot.append(newtree)

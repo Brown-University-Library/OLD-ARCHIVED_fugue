@@ -1,12 +1,12 @@
 from setuptools import setup
 
 setup(
-    name='Furnace',
-    version='0.8i',
-    packages=['furnace', 
-            'furnace.tools',
-            'furnace.tools.datasource_handlers',
-            'furnace.tools.datasource_handlers.filetype_handlers'],
+    name='Fugue',
+    version='0.9a',
+    packages=['fugue', 
+            'fugue.tools',
+            'fugue.tools.datasource_handlers',
+            'fugue.tools.datasource_handlers.filetype_handlers'],
     install_requires=[
         "certifi>=2018.8.24",
         "Click>=7.0",
@@ -21,6 +21,6 @@ setup(
     },
     entry_points='''
         [console_scripts]
-        furnace=furnace:furnace
+        fugue=fugue:fugue
     ''',
 )

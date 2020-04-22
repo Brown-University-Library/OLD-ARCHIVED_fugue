@@ -1,0 +1,39 @@
+site: #Basic configuration. `root` is the only required element (it defines the 
+      #root location of fugue's output), but 
+      #remember that everything in this file (except comments) will be in your 
+      #fugue-data.xml and available to templates.
+    root: ./site
+    title: "Fugue Documentation"
+
+#TODO
+clear: True
+
+preprocess: # We subprocess.run() each of these right after git pulls.
+    # 'python' here will always call the version used to run Fugue.
+    #- ['python', 'my-important-script.py']
+    #- ['pysass', '-w', '-t', 'nested', '-I', '.\bulma-0.8.0', '.\docs.scss', '..\site\css\site.css']
+
+postprocess: # We subprocess.run() each of these after doing everything else.
+    #- ['python', 'my-other-important-script.py']
+    
+#repositories:
+    #-
+    #    type: git
+    #    remote: git@github.com:example/some_xml.git
+    #    target: ../some_xml
+
+data-sources: 
+    docpages: 
+        type:   filesystem
+        directory: ./texts
+        filemask: '*.md'
+
+pages: 
+    docpages:
+        uri: false
+        template: templates/page.xsl #Path to the XSLT
+    
+static-sources:
+    emblem-css:
+        source: ./static
+        target: static

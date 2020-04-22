@@ -7,7 +7,7 @@ class CSV_FileHandler(Abstract_FileHandler):
     class Meta:
         mimetypes = ("text/csv",)
     
-    def process(path):
+    def process(path, _):
         with path.open("r", encoding='utf8') as fl:
             rdr = csvreader(fl)
             rowcount = 0

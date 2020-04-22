@@ -21,8 +21,8 @@ import subprocess
 # Makes this a nice CLI.
 import click
 
-from furnace.tools.datasource_handlers import DSHandler_Factory
-from furnace.tools import *
+from fugue.tools.datasource_handlers import DSHandler_Factory
+from fugue.tools import *
 
 HUGE_PARSER = ET.XMLParser(huge_tree=True)
 PYTHON_EXEC = executable
@@ -32,7 +32,7 @@ def process(commands):
     #TODO: Should be an option to supress exceptions here.
     if commands:
         for command in commands:
-            # Make sure we run outside scripts with the same python as furnace.
+            # Make sure we run outside scripts with the same python as fugue.
             cmd = [ PYTHON_EXEC if x == 'python' else x for x in command ]
             logging.info("Running %s" % (' '.join(cmd), ))
             ret = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -65,22 +65,22 @@ HERE = Path().resolve()
 @click.option('--log-level', '-L', 
                 type=click.Choice(['CRITICAL', 'ERROR', 'WARNING', 'INFO', 'DEBUG']),
                 default="WARNING", help="Set logging level. Defaults to WARNING.")
-@click.option('--project', '-p', default=Path('.', 'furnace.project.yaml'), 
-                type=click.Path(), help=r"Choose the project configuration file. Defaults to ./furnace.project.yaml. Ignored if `furnace build` is called with a repository URL.")
-@click.option('--data', '-d',  default=Path('.', 'furnace-data.xml'), 
-                type=click.Path(), help=r"Choose the data file furnace will create and use. Defaults to ./furnace-data.xml. Ignored if `furnace build` is called with a repository URL.")
+@click.option('--project', '-p', default=Path('.', 'fugue.project.yaml'), 
+                type=click.Path(), help=r"Choose the project configuration file. Defaults to ./fugue.project.yaml. Ignored if `fugue build` is called with a repository URL.")
+@click.option('--data', '-d',  default=Path('.', 'fugue-data.xml'), 
+                type=click.Path(), help=r"Choose the data file fugue will create and use. Defaults to ./fugue-data.xml. Ignored if `fugue build` is called with a repository URL.")
 @click.pass_context
-def furnace(ctx, log_level, project, data):
+def fugue(ctx, log_level, project, data):
     """Static site generator using XSL templates."""
 
-    """By default, looks at furnace.project.yaml in the current directory and completes all tasks
+    """By default, looks at fugue.project.yaml in the current directory and completes all tasks
        needed to generate a complete site.
     """
     #TODO: option to not supress stdout and stderr in subprocess.run() calls.
     #TODO: Make logging more configurable.
     logging.basicConfig(level=getattr(logging, log_level))
 
-    click.echo("Starting furnace")
+    click.echo("Starting fugue")
 
     #Load configuration file.
     ctx.obj = {'data_file': Path(data), 
@@ -97,13 +97,13 @@ def furnace(ctx, log_level, project, data):
         #Since chain=True, we can't tell which subcommand is being invoked :(.
         if ctx.invoked_subcommand == None:
             #Fail.
-            raise RuntimeError("No Furnace configuration file found and we are not building from a git repository.")
+            raise RuntimeError("No Fugue configuration file found and we are not building from a git repository.")
     
     if ctx.invoked_subcommand is None:
         logging.debug("No subcommand invoked. Calling build().")
         ctx.invoke(build)
 
-@furnace.command()
+@fugue.command()
 @click.pass_context
 def update(ctx):
     """`git pull` the project's repository."""
@@ -116,7 +116,7 @@ def update(ctx):
         raise RuntimeError("Failed to pull repository. Error: %s" % ret.stderr.decode())
     _load_config(ctx, ctx.obj['config_file'])
 
-@furnace.command()
+@fugue.command()
 @click.argument("repository", required=False)
 @click.option('--no-update', '-n', is_flag=True, 
                 help=r"Do not `git pull` this repository.")
@@ -132,11 +132,11 @@ def build(ctx, repository, no_update, no_fetch, no_outside_tasks):
     default if no other command is specified.
     
     If <repository> is provided, it is assumed to be the URL of a git repository; it
-    will be cloned into a subdirectory of the current directory, then the furnace project
-    there will be built. The `project` and `data` arguments provided to `furnace` will be
+    will be cloned into a subdirectory of the current directory, then the fugue project
+    there will be built. The `project` and `data` arguments provided to `fugue` will be
     interpreted relative to the repository's root."""
     logging.debug("Beginning build()")
-    click.echo(r"Running 'furnace build'. (Re)-building entire site.")
+    click.echo(r"Running 'fugue build'. (Re)-building entire site.")
 
     if repository != None:
         logging.debug("cloning %s." % repository)
@@ -177,9 +177,9 @@ def build(ctx, repository, no_update, no_fetch, no_outside_tasks):
         logging.debug("Data file: %s" % str(ctx.obj['data_file'].resolve()))
         
         if not Path(ctx.obj['config_file']).exists():
-            raise FileNotFoundError("No furnace project found at %s." % str(Path(ctx.obj['config_file'])))
+            raise FileNotFoundError("No fugue project found at %s." % str(Path(ctx.obj['config_file'])))
     elif not ctx.obj.get('settings', False):
-        raise FileNotFoundError("No furnace project found.")
+        raise FileNotFoundError("No fugue project found.")
 
     logging.debug("Settings: " + str(ctx.obj['settings']))
     logging.debug("Building. Project root: %s" % str(ctx.obj['project_root']))
@@ -206,7 +206,7 @@ def build(ctx, repository, no_update, no_fetch, no_outside_tasks):
 
 #TODO: Finish and test.
 '''
-@furnace.command()
+@fugue.command()
 @click.pass_context
 def clear(ctx):
     """Deletes all contents of the output directory.
@@ -234,7 +234,7 @@ def clear(ctx):
         os.unlink(str(fl.resolve()))
 '''
         
-@furnace.command()
+@fugue.command()
 @click.pass_context
 def preprocess(ctx):
     """Runs all preprocessing directives."""
@@ -245,7 +245,7 @@ def preprocess(ctx):
     commands = ctx.obj['settings'].get('preprocess', [])
     process(commands)
 
-@furnace.command()
+@fugue.command()
 @click.pass_context
 def fetch(ctx):
     """Fetches git repositories."""
@@ -255,7 +255,7 @@ def fetch(ctx):
 
     click.echo('Fetching repositories.')
 
-    repositories = ctx.obj['settings']['repositories']
+    repositories = ctx.obj['settings'].get('repositories', [])
     logging.info('Pulling %d repositories.' % len(repositories))
 
     for repo in repositories:
@@ -278,19 +278,19 @@ def fetch(ctx):
             if ret.returncode != 0:
                 raise RuntimeError("Failed to pull repository. Error: %s" % ret.stderr.decode())
 
-@furnace.command()
+@fugue.command()
 @click.pass_context
 def collect(ctx):
     """Collects all datasources.
     
-    Collects all data described in furnace.project.yaml under data-sources
+    Collects all data described in fugue.project.yaml under data-sources
     into the xml file specified by --data. Does not imply `fetch`."""
     click.echo("Collecting data")
     outdir = _output_dir(ctx)
     logging.debug("Collecting. Output dir: %s" % outdir)
-    xmlroot = ET.Element('furnace-data')
+    xmlroot = ET.Element('fugue-data')
     
-    projroot = ET.SubElement(xmlroot, 'furnace-config')
+    projroot = ET.SubElement(xmlroot, 'fugue-config')
 
     #Convert our settings file to XML and add to the XML data document.
     dict2xml(ctx.obj['settings'], projroot)
@@ -318,7 +318,7 @@ def collect(ctx):
     #No need to read this if it's already in memory.
     ctx.obj['xmldata'] = xmlroot
     
-@furnace.command()
+@fugue.command()
 @click.pass_context
 def static(ctx):
     """Copies static directories into output."""
@@ -342,7 +342,7 @@ def static(ctx):
         logging.debug("Moving " + str(source) + ' to ' + str(target) + ".")
         copy_tree(str(source), str(target))
 
-@furnace.command()
+@fugue.command()
 @click.pass_context
 def generate(ctx):
     """Generates pages from XSL templates. Does not imply `collect` and will fail if the file specified by --data doesn't exist."""
@@ -402,7 +402,7 @@ def generate(ctx):
             #with target.open('wb') as f:
             result.write_output(str(target))
 
-@furnace.command()
+@fugue.command()
 @click.pass_context
 def postprocess(ctx):
     """Runs all postprocessing directives."""
@@ -414,5 +414,5 @@ def postprocess(ctx):
 
 if __name__ == '__main__':
     STARTED_IN = Path().resolve()
-    furnace()
+    fugue()
     os.chdir(STARTED_IN)
