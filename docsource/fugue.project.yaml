@@ -2,7 +2,7 @@ site: #Basic configuration. `root` is the only required element (it defines the
       #root location of fugue's output), but 
       #remember that everything in this file (except comments) will be in your 
       #fugue-data.xml and available to templates.
-    root: ./site
+    root: ../docs
     title: "Fugue Documentation"
 
 #TODO

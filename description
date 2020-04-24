@@ -1,0 +1,9 @@
+_Fugue_ is a Python-based static site generator that uses XSLT as 
+its template language, somewhat inspired by the [Symphony CMS](https://www.getsymphony.com/). 
+The target use case is website creation from a collection of XML documents 
+(e.g. a book written in [DocBook](https://docbook.org/whatis) or [TEI](https://tei-c.org/), 
+or a collection of EAD or EAC-CPF finding aids).
+
+It was developed at Brown University Library for the 
+[Furnace and Fugue](https://library.brown.edu/create/digitalpublications/current-projects/furnace-and-fugue/) 
+project.

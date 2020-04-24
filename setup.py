@@ -1,14 +1,18 @@
-from setuptools import setup
+import setuptools
 
-setup(
-    name='Fugue',
+with open("description", "r") as fh:
+    long_description = fh.read()
+
+setuptools.setup(
+    name='Fugue-generator',
     author="Adam Bradley",
     author_email='adam_bradley@brown.edu',
-    version='0.9a',
-    packages=['fugue', 
-            'fugue.tools',
-            'fugue.tools.datasource_handlers',
-            'fugue.tools.datasource_handlers.filetype_handlers'],
+    description='',
+    long_description=long_description,
+    long_description_content_type='text/markdown',
+    url='https://github.com/brown-university-library/fugue',
+    version='0.9a1',
+    packages=setuptools.find_packages(),
     install_requires=[
         "certifi>=2018.8.24",
         "Click>=7.0",
@@ -26,4 +30,14 @@ setup(
         [console_scripts]
         fugue=fugue:fugue
     ''',
+    classifiers=[
+        "Programming Language :: Python :: 3",
+        "License :: OSI Approved :: MIT License",
+        "Operating System :: OS Independent",
+        "Development Status :: 5 - Production/Stable",
+        "Environment :: Console",
+        "Topic :: Text Processing :: Markup :: HTML",
+        "Topic :: Text Processing :: Markup :: XML",
+    ],
+    python_requires='>=3.6',
 )

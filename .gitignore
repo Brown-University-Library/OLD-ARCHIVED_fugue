@@ -1,4 +1,7 @@
 .vscode
 env/*
+dist/*
 __pycache__
 *.pyc
+build/*
+fugue-data.xml
